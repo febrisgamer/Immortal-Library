@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service cloud.firestore {
+    match /databases/{database}/documents {
+        match /admins/{email} {
+            allow read: if request.auth != null && request.auth.token.email == email;
+            allow write: if false;
+        }
+        match /userdata/{uid} {
+            allow read: if true;
+            allow write: if request.auth != null && request.auth.uid == uid;
+        }
+        match /epubs/metadata {
+            allow read: if true;
+            allow write: if false;
+        }
+        match /epubs/{bookId} {
+            allow read: if true;
+            allow write: if request.auth != null &&
+                        bookId != "metadata" &&
+                        exists(
+                            /databases/$(database)/documents/admins/$(request.auth.token.email)
+                        );
+        }
+    }
+}

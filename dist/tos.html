@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service • Immortal Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="/assets/icon-Ct00HvqH.ico">
+<link rel="shortcut icon" href="/assets/icon-Ct00HvqH.ico">
+<style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+    }
+    :root{
+        --bg:#090909;
+        --bg2:#111111;
+        --card:#171717;
+        --card2:#1d1d1d;
+        --gold:#d7b56d;
+        --gold2:#f0d28a;
+        --text:#ececec;
+        --muted:#aaaaaa;
+        --border:rgba(255,255,255,.08);
+    }
+
+    html{
+        scroll-behavior:smooth;
+    }
+
+    main{
+        margin-top:72px;
+        overflow:hidden;
+        position:relative;
+        background:
+            linear-gradient(
+                to bottom,
+                #090909 0%,
+                #0d0d0d 12%,
+                #111111 35%,
+                #151515 100%
+            );
+        border-top:1px solid rgba(255,255,255,.30);
+    }
+
+    body{
+        background:#090909;
+        color:var(--text);
+        font-family:Inter,sans-serif;
+    }
+
+    body::before{
+        content:"";
+        position:fixed;
+        inset:0;
+        background:
+            radial-gradient(circle at top,rgba(255,220,130,.05),transparent 35%),
+            radial-gradient(circle at bottom,rgba(255,255,255,.02),transparent 40%);
+        pointer-events:none;
+        z-index:-2;
+    }
+
+    body::after{
+        content:"";
+        position:fixed;
+        inset:0;
+        background-image:
+            radial-gradient(rgba(255,255,255,.03) 1px,transparent 1px);
+        background-size:42px 42px;
+        opacity:.25;
+        pointer-events:none;
+        z-index:-1;
+    }
+
+    nav{
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:72px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:0 70px;
+        background:rgba(10,10,10,.82);
+        backdrop-filter:blur(14px);
+        border-bottom:1px solid var(--border);
+        z-index:1000;
+    }
+
+    .nav-left{
+        display:flex;
+        gap:16px;
+        align-items:center;
+    }
+
+    .nav-right{
+        display:flex;
+        align-items:center;
+        gap:16px;
+        position:relative;
+    }
+
+    .nav-btn{
+        text-decoration:none;
+        padding:11px 22px;
+        border-radius:30px;
+        color:#d7d7d7;
+        transition:.25s;
+        font-weight:500;
+    }
+
+    .nav-btn:hover{
+        transform: translateY(-1px);
+    }
+
+    .active{
+        background:#e3c16e !important;
+        color:#000 !important;
+    }
+
+    footer{
+        padding:70px;
+        text-align:center;
+        border-top:1px solid rgba(255,255,255, .30);
+        color:#888;
+    }
+
+    .modal{
+        position:fixed;
+        inset:0;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        background:rgba(0,0,0,.75);
+        backdrop-filter:blur(10px);
+        z-index:9999;
+    }
+
+    .hidden{
+        display:none;
+    }
+
+    .modal-card{
+        width:420px;
+        max-width:90%;
+        background:#151515;
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:20px;
+        padding:35px;
+        text-align:center;
+    }
+
+    .modal-card h2{
+        margin-bottom:10px;
+    }
+
+    .modal-card p{
+        color:#aaa;
+        margin-bottom:25px;
+    }
+
+    .admin-avatar{
+        width:100%;
+        height:100%;
+        border-radius:50%;
+        object-fit:cover;
+        display:block;
+    }
+
+    .profile-btn{
+        width:46px;
+        height:46px;
+        padding:0;
+        background:transparent;
+        border-radius:50%;
+        overflow:hidden;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        cursor:pointer;
+        transition:
+            transform .18s,
+            box-shadow .18s,
+            border-color .18s;
+        border:2px solid transparent;
+    }
+
+    .profile-btn:active{
+        transform:scale(.95);
+    }
+
+    #googleLogin:disabled{
+        opacity:.6;
+        cursor:not-allowed;
+    }
+
+    .icon-btn{
+        width:44px;
+        height:44px;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        border:none;
+        background:transparent;
+        color:var(--gold);
+        border-radius:50%;
+        cursor:pointer;
+        transition:.2s;
+        font-size: 24px;
+    }
+
+    .icon-btn:active{
+        transform:scale(.94);
+    }
+
+    .profile-btn.hidden{
+        display:none;
+    }
+
+    #closeErrorModal{
+        margin-top:15px;
+        width:100%;
+        padding:12px;
+        background:#222;
+        color:white;
+        border:none;
+        border-radius:12px;
+        font-weight:500;
+        cursor:pointer;
+        transition:
+            background .2s,
+            transform .15s,
+            box-shadow .2s;
+    }
+
+    #closeErrorModal:hover{
+        background:#2f2f2f;
+        transform:translateY(-2px);
+        box-shadow:0 8px 24px rgba(0,0,0,.35);
+    }
+
+    #closeErrorModal:active{
+        transform:scale(.97);
+        background:#1a1a1a;
+    }
+
+    .profile-menu{
+        position:absolute;
+        top:75px;
+        right:65px; 
+        width:260px;
+        background:#181818;
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:16px;
+        overflow:hidden;
+        box-shadow:0 18px 50px rgba(0,0,0,.45);
+        animation:profileMenu .18s ease;
+        z-index:10;
+    }
+
+    @keyframes profileMenu{
+        from{
+            opacity:0;
+            transform:translateY(-8px);
+        }
+        to{
+            opacity:1;
+            transform:none;
+        }
+    }
+
+    .profile-menu-user{
+        width:100%;
+        display:flex;
+        align-items:center;
+        gap:14px;
+        padding:16px;
+        background:none;
+        border:none;
+        border-bottom:2px solid rgba(215,181,109,.22);
+        text-align:left;
+        cursor:pointer;
+        transition:background .18s;
+    }
+
+    .profile-menu-user:hover{
+        background:rgba(255,255,255,.05);
+    }
+
+    .profile-menu-user:active{
+        transform:scale(.99);
+    }
+
+    .profile-menu-avatar{
+        width:48px;
+        height:48px;
+        border-radius:50%;
+        object-fit:cover;
+    }
+
+    .profile-menu-info{
+        flex:1;
+        min-width:0;
+        padding-right:18px;
+    }
+
+    .profile-menu-name{
+        font-weight:600;
+        color:white;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+
+    .profile-menu-role{
+        color:#999;
+        font-size:13px;
+        margin-top:3px;
+    }
+
+    .logout-btn{
+        width:100%;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        padding:16px;
+        background:none;
+        border:none;
+        color:#ff7777;
+        cursor:pointer;
+        transition:
+            background .18s,
+            color .18s,
+            transform .15s;
+    }
+
+    .logout-btn span{
+        font-weight:500;
+    }
+
+    .logout-btn svg{
+        width:18px;
+        height:18px;
+        flex-shrink:0;
+    }
+
+    .logout-btn:hover{
+        background:rgba(255,255,255,.05);
+        color:#ff8d8d;
+    }
+
+    .logout-btn:active{
+        transform:scale(.985);
+    }
+
+    .profile-btn:hover{
+        transform:translateY(-2px);
+        border-color:rgba(215,181,109,.55);
+        box-shadow:
+            0 0 22px rgba(215,181,109,.22);
+    }
+
+    .footer-link{
+        text-decoration:underline;
+        text-underline-offset:3px;
+        transition:
+            color .2s,
+            opacity .2s,
+            text-shadow .2s;
+    }
+
+    .privacy-link{
+        color:#ff6b6b;
+    }
+
+    .privacy-link:hover{
+        color:#ff9b9b;
+        text-shadow:0 0 8px rgba(255,107,107,.35);
+    }
+
+    .footer-divider{
+        margin:0 10px;
+        color:#666;
+        user-select:none;
+    }
+
+    .footer-description{
+        color:#999;
+        line-height:1.8;
+        max-width:700px;
+        margin:auto;
+        font-size:16px;
+    }
+
+    .content-section{
+        background:
+            linear-gradient(
+                to bottom,
+                #090909 0%,
+                #0d0d0d 12%,
+                #111111 35%,
+                #151515 100%
+            );
+        border-top:1px solid rgba(255,255,255,.30);
+        padding:80px 0 90px;
+    }
+
+    .content-wrapper{
+        width:min(980px, calc(100% - 140px));
+        padding:0 70px;
+    }
+
+    .content-layout{
+        display:flex;
+        justify-content:center;
+    }
+
+    .content-title{
+        font-family:Cinzel,serif;
+        font-size:48px;
+        color:#abaaad;
+        margin-bottom:16px;
+        line-height:1.15;
+        text-align:center;
+    }
+
+    .content-heading{
+        font-family:Cinzel,serif;
+        font-size:30px;
+        color:#abaaad;
+        margin-top:60px;
+        margin-bottom:10px;
+        line-height:1.2;
+    }
+
+    .content-subheading{
+        font-size:20px;
+        font-weight:700;
+        color:#93a5ff;
+        margin-top:24px;
+        margin-bottom:12px;
+    }
+
+    .content-text{
+        color:#ffffff;
+        font-size:17px;
+        line-height:1.8;
+        margin-bottom:20px;
+    }
+
+    .content-indent{
+        margin-left:27px;
+    }
+
+    .content-list-indent{
+        transform:translateX(30px);
+    }
+
+    .content-strong{
+        color:#ff3030;
+        font-weight:700;
+    }
+
+    .content-list{
+        color:#ffffff;
+        font-size:16px;
+        line-height:1.8;
+        padding-left:24px;
+        margin:0;
+    }
+
+    .content-list li{
+        margin-bottom:6px;
+    }
+
+    .content-divider{
+        width:100%;
+        height:1px;
+        margin:55px 0;
+        background:linear-gradient(
+            90deg,
+            transparent,
+            rgba(215,181,109,.45),
+            transparent
+        );
+    }
+
+    @media(max-width:900px){
+        main{
+            margin-top:58px;
+            padding:30px 0;
+            padding: 0;
+            border-top:none;
+        }
+        nav{
+            height:58px;
+            padding:0 14px;
+        }
+        .nav-left{
+            gap:8px;
+        }
+        .nav-right{
+            gap:8px;
+        }
+        .nav-btn{
+            padding:8px 14px;
+            font-size:14px;
+        }
+        .profile-btn{
+            width:38px;
+            height:38px;
+        }
+        footer{
+            padding:45px 24px;
+        }
+        .icon-btn:hover{
+            transform:none;
+            box-shadow:none;
+        }
+        .icon-btn:active{
+            transform:scale(.95);
+        }
+        #closeErrorModal:hover{
+            transform:none;
+            box-shadow:none;
+        }
+        #closeErrorModal:active{
+            transform:scale(.96);
+        }
+        .icon-btn{
+            width:38px;
+            height:38px;
+        }
+        .icon-btn svg{
+            width:18px;
+            height:18px;
+        }
+        .profile-menu{
+            top:60px;
+            right:15px;
+            width:230px;
+        }
+        .profile-menu-user{
+            padding:14px;
+        }
+        .logout-btn{
+            padding:15px;
+        }
+        .footer-description{
+            font-size:14px;
+            line-height:1.7;
+        }
+        .content-layout{
+            display:flex;
+            flex-direction:column;
+            gap:28px;
+        }
+        .content-wrapper{
+            width:100%;
+            padding:0 18px;
+        }
+        .content-title{
+            font-size:25px;
+            margin-bottom:14px;
+        }
+        .content-heading{
+            font-size:18px;
+            margin-top:38px;
+            margin-bottom:8px;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        }
+        .content-subheading{
+            font-size:15px;
+            margin-top:18px;
+            margin-bottom:10px;
+        }
+        .content-text{
+            font-size:14px;
+            line-height:1.75;
+            margin-bottom:14px;
+        }
+        .content-list{
+            margin-left:18px;
+            font-size:14px;
+            line-height:1.7;
+        }
+        .content-list li{
+            margin-bottom:4px;
+        }
+        .content-divider{
+            margin:32px 0;
+        }
+        .content-indent{
+            margin-left:14px;
+        }
+        .content-list-indent{
+            transform:translateX(1px);
+        }
+    }
+
+</style>
+  <script type="module" crossorigin src="/assets/tos-BL-OSAMy.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/firebase-CNN4wZ5D.js">
+</head>
+<body>
+
+    <nav>
+        <div class="nav-left">
+            <button id="menuBtn" class="icon-btn">
+                蛊
+            </button>
+            <a class="nav-btn active" href="/browse">
+                Browse
+            </a>
+        </div>
+        <div class="nav-right">
+            <button id="profileBtn" class="profile-btn hidden"></button>
+        </div>
+    </nav>
+
+    <div id="profileMenu" class="profile-menu hidden">
+        <button id="profilePageBtn" class="profile-menu-user">
+            <img id="menuAvatar" class="profile-menu-avatar">
+            <div class="profile-menu-info">
+                <div id="menuName" class="profile-menu-name"></div>
+                <div id="menuRole" class="profile-menu-role"></div>
+            </div>
+        </button>
+        <button id="logoutBtn" class="logout-btn">
+            <span>Log Out</span>
+            <svg xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+        </button>
+    </div>
+
+<main>
+    <section class="content-section">
+        <div class="content-layout">
+            <div class="content-wrapper">
+                <h1 class="content-title">
+                    Terms of Service
+                </h1>
+                <p class="content-text">
+                    Welcome to <strong class="content-strong">Immortal Library</strong>.
+                    These Terms of Service govern your access to and use of the website. By accessing or using Immortal Library, you agree to comply with these Terms. If you do not agree, please discontinue use of the Website.
+                </p>
+                <p class="content-text">
+                    <strong class="content-strong">Effective Date:</strong>
+                    July 3, 2026
+                </p>
+                <div class="content-divider"></div>
+                <h2 class="content-heading">
+                    1. About Immortal Library
+                </h2>
+                <p class="content-text content-indent">
+                    Immortal Library is an online digital library dedicated to providing EPUB editions of novels, web novels, and other literary works for readers around the world.
+                </p>
+                <p class="content-text content-indent">
+                    The Website is provided as a free service for readers and may be updated, modified, suspended, or discontinued at any time without prior notice.
+                </p>
+                <div class="content-divider"></div>
+                <h2 class="content-heading">
+                    2. Availability
+                </h2>
+                <p class="content-text content-indent">
+                    Immortal Library is provided on an <strong class="content-strong">"AS IS"</strong> and <strong class="content-strong">"AS AVAILABLE"</strong> basis.
+                </p>
+                <h3 class="content-subheading content-indent">
+                    We make no guarantees regarding
+                </h3>
+                <ul class="content-list content-list-indent">
+                    <li>Continuous availability of the Website.</li>
+                    <li>Accuracy or completeness of any content.</li>
+                    <li>Permanent availability of any book or resource.</li>
+                    <li>Compatibility with every device or EPUB reader.</li>
+                    <li>Freedom from interruptions, errors, or technical issues.</li>
+                </ul>
+                <p class="content-text content-indent">
+                    Access to the Website may be limited, interrupted, or terminated without notice.
+                </p>
+                <div class="content-divider"></div>
+                <h2 class="content-heading">
+                    3. Intellectual Property
+                </h2>
+                <p class="content-text content-indent">
+                    Immortal Library may contain a variety of digital publications from different sources.
+                </p>
+                <h3 class="content-subheading content-indent">
+                    Content may include
+                </h3>
+                <ul class="content-list content-list-indent">
+                    <li>Original works.</li>
+                    <li>Works made available with permission where applicable.</li>
+                    <li>Public domain works.</li>
+                    <li>Other EPUB content.</li>
+                </ul>
+                <p class="content-text content-indent">
+                    Unless explicitly stated otherwise, all copyrights, trademarks, translations, artwork, and other intellectual property rights remain the property of their respective authors, publishers, translators, or rights holders.
+                </p>
+                <p class="content-text content-indent">
+                    <strong class="content-strong">Immortal Library does not claim ownership</strong> of third-party literary works solely because they are accessible through the Website.
+                </p>
+                <div class="content-divider"></div>
+                <h2 class="content-heading">
+                    4. Copyright &amp; Takedown Policy
+                </h2>
+                <p class="content-text content-indent">
+                    Immortal Library respects the rights of authors, publishers, translators, and copyright holders.
+                </p>
+                <h3 class="content-subheading content-indent">
+                    A valid request should include
+                </h3>
+                <ul class="content-list content-list-indent">
+                    <li>Identification of the copyrighted work.</li>
+                    <li>Identification of the allegedly infringing material.</li>
+                    <li>Information sufficient to locate the material.</li>
+                    <li>Proof of ownership or authorization where applicable.</li>
+                    <li>Contact information for follow-up.</li>
+                </ul>
+                <p class="content-text content-indent">
+                    Upon receiving and reviewing a valid request, we may remove, disable access to, or otherwise restrict the reported material where appropriate.
+                </p>
+                <div class="content-divider"></div>
+                <h2 class="content-heading">
+                    5. User Conduct
+                </h2>
+                <p class="content-text content-indent">
+                    By using Immortal Library, you agree to use the Website responsibly.
+                </p>
+                <h3 class="content-subheading content-indent">
+                    You agree not to
+                </h3>
+                <ul class="content-list content-list-indent">
+                    <li>Attempt to gain unauthorized access to the Website.</li>
+                    <li>Interfere with servers or services.</li>
+                    <li>Upload malicious software or harmful code.</li>
+                    <li>Abuse administrator features.</li>
+                    <li>Impersonate administrators or other users.</li>
+                    <li>Use the Website in violation of applicable laws.</li>
+                </ul>
+                <div class="content-divider"></div>
+                <h2 class="content-heading">
+                    6. Third-Party Services
+                </h2>
+                <p class="content-text content-indent">
+                    Immortal Library may rely on trusted third-party services for hosting, authentication, cloud storage, databases, analytics, and content delivery.
+                </p>
+                <p class="content-text content-indent">
+                    These services operate under their own respective terms and privacy policies.
+                </p>
+                <div class="content-divider"></div>
+                <h2 class="content-heading">
+                    7. Disclaimer of Warranties
+                </h2>
+                <p class="content-text content-indent">
+                    To the fullest extent permitted by law, Immortal Library provides all services and content without warranties of any kind.
+                </p>
+                <h3 class="content-subheading content-indent">
+                    We do not guarantee
+                </h3>
+                <ul class="content-list content-list-indent">
+                    <li>Every EPUB is complete or error-free.</li>
+                    <li>Metadata is accurate.</li>
+                    <li>Downloads will always remain available.</li>
+                    <li>Content is suitable for every purpose.</li>
+                </ul>
+                <p class="content-text content-indent">
+                    Users access and use the Website entirely at their own discretion.
+                </p>
+                <div class="content-divider"></div>
+                <h2 class="content-heading">
+                    8. Limitation of Liability
+                </h2>
+                <p class="content-text content-indent">
+                    To the fullest extent permitted by applicable law, Immortal Library, its administrators, contributors, and affiliates shall not be liable for damages arising from the use of or inability to use the Website.
+                </p>
+                <h3 class="content-subheading content-indent">
+                    This includes, but is not limited to
+                </h3>
+                <ul class="content-list content-list-indent">
+                    <li>Website downtime.</li>
+                    <li>Removal or modification of content.</li>
+                    <li>Loss of data.</li>
+                    <li>Technical failures.</li>
+                    <li>Third-party services.</li>
+                    <li>Indirect, incidental, consequential, or special damages.</li>
+                </ul>
+                <div class="content-divider"></div>
+                <h2 class="content-heading">
+                    9. Changes to the Website
+                </h2>
+                <p class="content-text content-indent">
+                    Immortal Library may modify, reorganize, add, or remove features, books, services, policies, or content at any time without prior notice.
+                </p>
+                <p class="content-text content-indent">
+                    Content available today may not remain available in the future.
+                </p>
+                <div class="content-divider"></div>
+                <h2 class="content-heading">
+                    10. Changes to These Terms
+                </h2>
+                <p class="content-text content-indent">
+                    These Terms of Service may be revised, updated, or modified at any time.
+                </p>
+                <p class="content-text content-indent">
+                    Continued use of Immortal Library following publication of updated Terms constitutes acceptance of those changes.
+                </p>
+                <div class="content-divider"></div>
+                <h2 class="content-heading">
+                    11. Governing Law
+                </h2>
+                <p class="content-text content-indent">
+                    These Terms shall be governed by and interpreted in accordance with the applicable laws of the jurisdiction in which Immortal Library is operated, without regard to conflict of law principles.
+                </p>
+                <div class="content-divider"></div>
+                <h2 class="content-heading">
+                    12. Contact
+                </h2>
+                <p class="content-text content-indent">
+                    Questions regarding these Terms of Service, copyright concerns, or legal matters may be directed to the administrator through the official contact methods provided by Immortal Library.
+                </p>
+                <div class="content-divider"></div>
+                <h2 class="content-heading">
+                    Acceptance
+                </h2>
+                <p class="content-text content-indent">
+                    By accessing or using <strong class="content-strong">Immortal Library</strong>, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
+                </p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+    <footer>
+        <div style="font-family:Cinzel,serif;font-size:28px;color:var(--gold);margin-bottom:12px;">
+            蛊
+        </div>
+        <div style="font-size:22px;margin-bottom:10px;">
+            Immortal Library
+        </div>
+        <div class="footer-description">
+            An ever-growing library dedicated to preserving Literature for readers around the world
+        </div>
+        <div style="margin-top:40px;color:#666;font-size:14px;">
+            © 2026 Febris Forge. All Rights Reserved
+        </div>
+        <div style="margin-top:12px;font-size:13px;">
+            <a class="footer-link privacy-link" href="/pp">Privacy Policy</a>
+        </div>
+    </footer>
+
+    <div id="errorModal" class="modal hidden">
+        <div class="modal-card">
+            <h2 id="errorTitle">
+                Access Denied
+            </h2>
+            <p id="errorMessage">
+                You are not an administrator
+            </p>
+            <button id="closeErrorModal">
+                Close
+            </button>
+        </div>
+    </div>
+
+
+</body>
+</html>

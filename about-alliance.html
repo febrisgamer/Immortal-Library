@@ -1,0 +1,1901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About • Heaven And Earth Great Love Alliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="assets/icon.ico">
+<link rel="shortcut icon" href="assets/icon.ico">
+<style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+    }
+    :root{
+        --bg:#090909;
+        --bg2:#111111;
+        --card:#171717;
+        --card2:#1d1d1d;
+        --gold:#d7b56d;
+        --gold2:#f0d28a;
+        --text:#ececec;
+        --muted:#aaaaaa;
+        --border:rgba(255,255,255,.08);
+    }
+
+    html{
+        scroll-behavior:smooth;
+    }
+
+    main{
+        margin-top:72px;
+        min-height:calc(100vh - 72px);
+        display:flex;
+        flex-direction:column;
+        background:
+            linear-gradient(
+                to bottom,
+                rgba(9,9,9,.78),
+                rgba(9,9,9,.58) 28%,
+                rgba(9,9,9,.38) 50%,
+                rgba(9,9,9,.58) 72%,
+                rgba(9,9,9,.82)
+            ),
+            url("assets/bg11.jpg");
+        background-size:cover;
+        background-position:center;
+        background-repeat:no-repeat;
+    }
+
+    body{
+        background:#090909;
+        color:var(--text);
+        font-family:Inter,sans-serif;
+    }
+
+    body::before{
+        content:"";
+        position:fixed;
+        inset:0;
+        background:
+            radial-gradient(circle at top,rgba(255,220,130,.05),transparent 35%),
+            radial-gradient(circle at bottom,rgba(255,255,255,.02),transparent 40%);
+        pointer-events:none;
+        z-index:-2;
+    }
+
+    body::after{
+        content:"";
+        position:fixed;
+        inset:0;
+        background-image:
+            radial-gradient(rgba(255,255,255,.03) 1px,transparent 1px);
+        background-size:42px 42px;
+        opacity:.25;
+        pointer-events:none;
+        z-index:-1;
+    }
+
+    nav{
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:72px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:0 70px;
+        background:rgba(10,10,10,.82);
+        backdrop-filter:blur(14px);
+        border-bottom:1px solid var(--border);
+        z-index:1000;
+    }
+
+    .nav-left{
+        display:flex;
+        gap:16px;
+        align-items:center;
+    }
+
+    .nav-right{
+        display:flex;
+        align-items:center;
+        gap:16px;
+        position:relative;
+    }
+
+    .nav-btn{
+        text-decoration:none;
+        padding:11px 22px;
+        border-radius:30px;
+        color:#d7d7d7;
+        transition:.25s;
+        font-weight:500;
+    }
+
+    .nav-btn:hover{
+        transform: translateY(-1px);
+    }
+
+    .active{
+        background:#e3c16e !important;
+        color:#000 !important;
+    }
+
+    footer{
+        padding:70px;
+        text-align:center;
+        border-top:1px solid rgba(255,255,255, .30);
+        color:#888;
+    }
+
+    .modal{
+        position:fixed;
+        inset:0;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        background:rgba(0,0,0,.75);
+        backdrop-filter:blur(10px);
+        z-index:9999;
+    }
+
+    .hidden{
+        display:none;
+    }
+
+    .modal-card{
+        width:420px;
+        max-width:90%;
+        background:#151515;
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:20px;
+        padding:35px;
+        text-align:center;
+    }
+
+    .modal-card h2{
+        margin-bottom:10px;
+    }
+
+    .modal-card p{
+        color:#aaa;
+        margin-bottom:25px;
+    }
+
+    .admin-avatar{
+        width:100%;
+        height:100%;
+        border-radius:50%;
+        object-fit:cover;
+        display:block;
+    }
+
+    .profile-btn{
+        width:46px;
+        height:46px;
+        padding:0;
+        background:transparent;
+        border-radius:50%;
+        overflow:hidden;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        cursor:pointer;
+        transition:
+            transform .18s,
+            box-shadow .18s,
+            border-color .18s;
+        border:2px solid transparent;
+    }
+
+    .profile-btn:active{
+        transform:scale(.95);
+    }
+
+    #googleLogin:disabled{
+        opacity:.6;
+        cursor:not-allowed;
+    }
+
+    .icon-btn{
+        width:44px;
+        height:44px;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        border:none;
+        background:transparent;
+        color:var(--gold);
+        border-radius:50%;
+        cursor:pointer;
+        transition:.2s;
+        font-size: 24px;
+    }
+
+    .icon-btn:active{
+        transform:scale(.94);
+    }
+
+    .profile-btn.hidden{
+        display:none;
+    }
+
+    #closeErrorModal{
+        margin-top:15px;
+        width:100%;
+        padding:12px;
+        background:#222;
+        color:white;
+        border:none;
+        border-radius:12px;
+        font-weight:500;
+        cursor:pointer;
+        transition:
+            background .2s,
+            transform .15s,
+            box-shadow .2s;
+    }
+
+    #closeErrorModal:hover{
+        background:#2f2f2f;
+        transform:translateY(-2px);
+        box-shadow:0 8px 24px rgba(0,0,0,.35);
+    }
+
+    #closeErrorModal:active{
+        transform:scale(.97);
+        background:#1a1a1a;
+    }
+
+    .profile-menu{
+        position:absolute;
+        top:75px;
+        right:65px; 
+        width:260px;
+        background:#181818;
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:16px;
+        overflow:hidden;
+        box-shadow:0 18px 50px rgba(0,0,0,.45);
+        animation:profileMenu .18s ease;
+        z-index:10;
+    }
+
+    @keyframes profileMenu{
+        from{
+            opacity:0;
+            transform:translateY(-8px);
+        }
+        to{
+            opacity:1;
+            transform:none;
+        }
+    }
+
+    .profile-menu-user{
+        width:100%;
+        display:flex;
+        align-items:center;
+        gap:14px;
+        padding:16px;
+        background:none;
+        border:none;
+        border-bottom:2px solid rgba(215,181,109,.22);
+        text-align:left;
+        cursor:pointer;
+        transition:background .18s;
+    }
+
+    .profile-menu-user:hover{
+        background:rgba(255,255,255,.05);
+    }
+
+    .profile-menu-user:active{
+        transform:scale(.99);
+    }
+
+    .profile-menu-avatar{
+        width:48px;
+        height:48px;
+        border-radius:50%;
+        object-fit:cover;
+    }
+
+    .profile-menu-info{
+        flex:1;
+        min-width:0;
+        padding-right:18px;
+    }
+
+    .profile-menu-name{
+        font-weight:600;
+        color:white;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+
+    .profile-menu-role{
+        color:#999;
+        font-size:13px;
+        margin-top:3px;
+    }
+
+    .logout-btn{
+        width:100%;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        padding:16px;
+        background:none;
+        border:none;
+        color:#ff7777;
+        cursor:pointer;
+        transition:
+            background .18s,
+            color .18s,
+            transform .15s;
+    }
+
+    .logout-btn span{
+        font-weight:500;
+    }
+
+    .logout-btn svg{
+        width:18px;
+        height:18px;
+        flex-shrink:0;
+    }
+
+    .logout-btn:hover{
+        background:rgba(255,255,255,.05);
+        color:#ff8d8d;
+    }
+
+    .logout-btn:active{
+        transform:scale(.985);
+    }
+
+    .profile-btn:hover{
+        transform:translateY(-2px);
+        border-color:rgba(215,181,109,.55);
+        box-shadow:
+            0 0 22px rgba(215,181,109,.22);
+    }
+
+    .footer-link{
+        text-decoration:underline;
+        text-underline-offset:3px;
+        transition:
+            color .2s,
+            opacity .2s,
+            text-shadow .2s;
+    }
+
+    .privacy-link{
+        color:#ff6b6b;
+    }
+
+    .privacy-link:hover{
+        color:#ff9b9b;
+        text-shadow:0 0 8px rgba(255,107,107,.35);
+    }
+
+    .terms-link{
+        color:#6fb6ff;
+    }
+
+    .terms-link:hover{
+        color:#9fd1ff;
+        text-shadow:0 0 8px rgba(111,182,255,.35);
+    }
+
+    .footer-divider{
+        margin:0 10px;
+        color:#666;
+        user-select:none;
+    }
+
+    .footer-description{
+        color:#999;
+        line-height:1.8;
+        max-width:700px;
+        margin:auto;
+        font-size:16px;
+    }
+
+    .discord-card{
+        width:340px;
+        user-select: none;
+        border-radius:18px;
+        overflow:hidden;
+        background:#18191c;
+        border:1px solid rgba(255,255,255,.08);
+        box-shadow:
+            0 15px 40px rgba(0,0,0,.55),
+            inset 0 1px rgba(255,255,255,.05);
+    }
+
+    .banner{
+        height:120px;
+        background-image:url("https://cdn.discordapp.com/splashes/1398024265655128194/675d3a8d211bb5f0e2e874aff7c0b23e.png?size=2048");
+        background-size:cover;
+        background-position:center;
+        background-repeat:no-repeat;
+    }
+
+    .content{
+        position:relative;
+        padding:0 18px 18px;
+    }
+
+    .server-icon{
+        width:74px;
+        height:74px;
+        border-radius:22px;
+        border:5px solid #18191c;
+        margin-top:-38px;
+        object-fit:cover;
+        background:#2b2d31;
+    }
+
+    .server-name{
+        margin-top:10px;
+        font-size:27px;
+        font-weight:700;
+        color:#fff;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+
+    .stats{
+        display:flex;
+        gap:14px;
+        margin-top:10px;
+        color:#b5bac1;
+        font-size:15px;
+    }
+
+    .stat{
+        display:flex;
+        align-items:center;
+        gap:6px;
+    }
+
+    .dot{
+        width:9px;
+        height:9px;
+        border-radius:50%;
+    }
+
+    .online{
+        background:#23a559;
+    }
+
+    .members{
+        background:#747f8d;
+    }
+
+    .created{
+        color:#949ba4;
+        margin-top:6px;
+        font-size:15px;
+    }
+
+    .join{
+        display:block;
+        margin-top:18px;
+        text-decoration:none;
+        text-align:center;
+        background:#248046;
+        color:white;
+        padding:14px;
+        border-radius:13px;
+        font-weight:700;
+        transition:.2s;
+    }
+
+    .card-left .join,
+    .card-right .join{
+        pointer-events:none;
+        cursor:default;
+        opacity:.45;
+        background:#3a3a3a;
+    }
+
+    .card-center .join{
+        pointer-events:auto;
+        cursor:pointer;
+        opacity:1;
+        background:#248046;
+    }
+
+    .card-center .join:hover{
+        background:#2ea85d;
+    }
+
+    .description{
+        margin-top:16px;
+        color:#b5bac1;
+        font-size:15px;
+        line-height:1.55;
+    }
+
+    .tags{
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px;
+        margin-top:16px;
+        margin-bottom:20px;
+    }
+
+    .tag{
+        display:flex;
+        align-items:center;
+        gap:6px;
+        padding:8px 12px;
+        background:#1b1d22;
+        border:1px solid rgba(255,255,255,.10);
+        border-radius:999px;
+        color:#dcddde;
+        font-size:14px;
+        white-space:nowrap;
+    }
+
+    .tag:hover{
+        border:1px solid rgba(255,255,255,.30);
+    }
+
+    .tag img{
+        width:16px;
+        height:16px;
+        object-fit:contain;
+        flex-shrink:0;
+    }
+
+    .alliance-info{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        text-align:center;
+        min-height:170px;
+        padding:20px 20px 8px;
+        transition:opacity .3s ease;
+    }
+
+    .alliance-info.fade{
+        opacity:0;
+    }
+
+    .alliance-title{
+        font-family:Cinzel,serif;
+        font-size:54px;
+        color:var(--gold);
+        font-weight:700;
+        line-height:1.15;
+        white-space:nowrap;
+    }
+
+    .alliance-subtitle{
+        color:var(--silver);
+        letter-spacing:4px;
+        text-transform:uppercase;
+        font-size:14px;
+        margin-top:4px;
+        margin-bottom:4px;
+    }
+
+    .alliance-cards{
+        position:relative;
+        flex:1;
+        width:min(1400px,100%);
+        margin:0 auto;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        transform:translateY(-10px);
+    }
+
+    .card-slot{
+        position:absolute;
+        left:50%;
+        top:50%;
+        transform-origin:center;
+        transition:
+            transform .75s cubic-bezier(.22,.61,.36,1),
+            opacity .75s,
+            filter .75s,
+            z-index .75s;
+    }
+
+    .card-center{
+        transform:
+            translate(-50%, -50%)
+            scale(1.2);
+        opacity:1;
+        filter:none;
+        z-index:3;
+    }
+
+    .card-left{
+        transform:
+            translate(calc(-50% - 420px), -50%)
+            scale(.75);
+        opacity:1;
+        filter:brightness(.7);
+        z-index:1;
+    }
+
+    .card-right{
+        transform:
+            translate(calc(-50% + 420px), -50%)
+            scale(.75);
+        opacity:1;
+        filter:brightness(.7);
+        z-index:1;
+    }
+
+    .alliance-section{
+        height:120px;
+        overflow:hidden;
+        position:relative;
+        display:flex;
+        align-items:center;
+        background:
+            linear-gradient(
+                to bottom,
+                #090909 0%,
+                #0d0d0d 12%,
+                #111111 35%,
+                #151515 100%
+            );
+        border-top:1px solid rgba(255,255,255, .30);
+    }
+
+    .join-strip{
+        width:100%;
+        overflow:hidden;
+    }
+
+    .join-track{
+        display:flex;
+        width:max-content;
+        animation:joinScroll 28s linear infinite;
+    }
+
+    .join-group{
+        display:flex;
+    }
+
+    .join-track span{
+        flex-shrink:0;
+        margin-right:120px;
+        font-family:Inter,sans-serif;
+        font-size:62px;
+        font-weight:800;
+        letter-spacing:.42em;
+        text-transform:uppercase;
+        white-space:nowrap;
+        background:linear-gradient(
+            90deg,
+            #d6d6d6 0%,
+            #d4d4d4 8%,
+            #d2d2d2 16%,
+            #cfcfcf 24%,
+            #c9c9c9 32%,
+            #c9c1af 40%,
+            #ccb98f 48%,
+            #cfb26e 56%,
+            #d3b05f 66%,
+            #d7b56d 76%,
+            #e2c87f 88%,
+            #f0d28a 100%
+        );
+        background-size:100% 100%;
+        -webkit-background-clip:text;
+        background-clip:text;
+        color:transparent;
+        user-select:none;
+    }
+
+    @keyframes joinScroll{
+        from{
+            transform:translateX(0);
+        }
+        to{
+            transform:translateX(calc(-50%));
+        }
+    }
+
+    .content-section{
+        background:
+            linear-gradient(
+                to bottom,
+                #090909 0%,
+                #0d0d0d 12%,
+                #111111 35%,
+                #151515 100%
+            );
+        border-top:1px solid rgba(255,255,255,.30);
+        padding:80px 0 90px;
+    }
+
+    .content-wrapper{
+        width:calc(100% - 390px);
+        padding:0 70px;
+    }
+
+    .content-layout{
+        display:flex;
+        align-items:flex-start;
+        gap:40px;
+    }
+
+    .contributors-card{
+        width:300px;
+        position:sticky;
+        top:110px;
+        flex-shrink:0;
+        background:rgba(24,24,24,.82);
+        backdrop-filter:blur(12px);
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:18px;
+        padding:24px;
+        box-shadow:
+            0 18px 40px rgba(0,0,0,.35),
+            inset 0 1px rgba(255,255,255,.04);
+    }
+
+    .contributors-title{
+        font-family:Cinzel,serif;
+        font-size:24px;
+        color:var(--gold);
+        margin-bottom:20px;
+    }
+
+    .contributor{
+        display:flex;
+        align-items:center;
+        gap:14px;
+        padding:14px 0;
+    }
+
+    .contributor:not(:last-child){
+        border-bottom:1px solid rgba(255,255,255,.06);
+    }
+
+    .contributor-avatar{
+        width:52px;
+        height:52px;
+        border-radius:50%;
+        background:#2a2a2a;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        font-size:22px;
+        color:var(--gold);
+        flex-shrink:0;
+    }
+
+    .contributor-name{
+        color:#ececec;
+        font-weight:600;
+        font-size:15px;
+    }
+
+    .contributor-role{
+        margin-top:3px;
+        color:#9c9c9c;
+        font-size:14px;
+    }
+
+    .contributor-count{
+        margin-left:auto;
+        color:var(--gold);
+        font-weight:700;
+    }
+
+    .contributor-rank{
+        width:30px;
+        height:38px;
+        object-fit:contain;
+        flex-shrink:0;
+        margin-left:auto;
+    }
+
+    .content-title{
+        font-family:Cinzel,serif;
+        font-size:48px;
+        color:var(--gold);
+        margin-bottom:16px;
+        line-height:1.15;
+    }
+
+    .content-heading{
+        font-family:Cinzel,serif;
+        font-size:30px;
+        color:#f0d28a;
+        margin-top:60px;
+        margin-bottom:10px;
+        line-height:1.2;
+    }
+
+    .content-subheading{
+        font-size:20px;
+        font-weight:700;
+        color:#ffffff;
+        margin-top:24px;
+        margin-bottom:12px;
+    }
+
+    .content-text{
+        color:#b8b8b8;
+        font-size:17px;
+        line-height:1.8;
+        margin-bottom:20px;
+    }
+
+    .content-strong{
+        color:#ececec;
+        font-weight:700;
+    }
+
+    .content-list{
+        margin:0 0 0 24px;
+        color:#c7c7c7;
+        font-size:16px;
+        line-height:1.8;
+    }
+
+    .content-list li{
+        margin-bottom:6px;
+    }
+
+    .content-divider{
+        width:100%;
+        height:1px;
+        margin:55px 0;
+        background:linear-gradient(
+            90deg,
+            transparent,
+            rgba(215,181,109,.45),
+            transparent
+        );
+    }
+
+    @media(max-width:900px){
+        main{
+            margin-top:58px;
+            min-height:calc(100vh - 58px);
+            display:grid;
+            grid-template-rows:1fr 2fr;
+        }
+        nav{
+            height:58px;
+            padding:0 14px;
+        }
+        .nav-left{
+            gap:8px;
+        }
+        .nav-right{
+            gap:8px;
+        }
+        .nav-btn{
+            padding:8px 14px;
+            font-size:14px;
+        }
+        .profile-btn{
+            width:38px;
+            height:38px;
+        }
+        footer{
+            padding:45px 24px;
+        }
+        .icon-btn:hover{
+            transform:none;
+            box-shadow:none;
+        }
+        .icon-btn:active{
+            transform:scale(.95);
+        }
+        #closeErrorModal:hover{
+            transform:none;
+            box-shadow:none;
+        }
+        #closeErrorModal:active{
+            transform:scale(.96);
+        }
+        .icon-btn{
+            width:38px;
+            height:38px;
+        }
+        .icon-btn svg{
+            width:18px;
+            height:18px;
+        }
+        .profile-menu{
+            top:60px;
+            right:15px;
+            width:230px;
+        }
+        .profile-menu-user{
+            padding:14px;
+        }
+        .logout-btn{
+            padding:15px;
+        }
+        .footer-description{
+            font-size:14px;
+            line-height:1.7;
+        }
+        .alliance-cards{
+            width:100%;
+            height:520px;
+            margin-top:-85px;
+            overflow:hidden;
+            touch-action:pan-y;
+            -webkit-user-select:none;
+            user-select:none;
+        }
+        .discord-card{
+            width:300px;
+        }
+        .card-slot{
+            left:50%;
+            top:50%;
+        }
+        .card-center{
+            transform:
+                translate(-50%,-50%)
+                scale(.95);
+            z-index:3;
+            opacity:1;
+        }
+        .card-left{
+            transform:
+                translate(calc(-50% - 235px),-50%)
+                scale(.65);
+            opacity:.75;
+            filter:brightness(.7);
+            z-index:1;
+        }
+        .card-right{
+            transform:
+                translate(calc(-50% + 235px),-50%)
+                scale(.65);
+            opacity:.75;
+            filter:brightness(.7);
+            z-index:1;
+        }
+        .tag{
+            font-size: 10px;
+        }
+        .tag img{
+            width: 14px;
+            height: 14px;
+        }
+        .description{
+            font-size:13px;
+        }
+        .alliance-info{
+            width:92%;
+            margin:auto;
+            min-height:130px;
+            padding:8px 20px 0;
+            transform:translateY(-40px);
+        }
+        .alliance-title{
+            font-size:16px;
+        }
+        .alliance-subtitle{
+            font-size:9px;
+            letter-spacing:2px;
+            margin-bottom:10px;
+        }
+        .alliance-section{
+            height:64px;
+        }
+        .join-track{
+            animation:joinScroll 18s linear infinite;
+        }
+        .join-track span{
+            margin-right:48px;
+            font-size:26px;
+            font-weight:900;
+            letter-spacing:.22em;
+        }
+        .content-layout{
+            display:flex;
+            flex-direction:column;
+            gap:28px;
+        }
+        .content-wrapper{
+            width:100%;
+            padding:0 18px;
+        }
+        .content-title{
+            font-size:25px;
+            margin-bottom:14px;
+        }
+        .content-heading{
+            font-size:18px;
+            margin-top:38px;
+            margin-bottom:8px;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        }
+        .content-subheading{
+            font-size:15px;
+            margin-top:18px;
+            margin-bottom:10px;
+        }
+        .content-text{
+            font-size:14px;
+            line-height:1.75;
+            margin-bottom:14px;
+        }
+        .content-list{
+            margin-left:18px;
+            font-size:14px;
+            line-height:1.7;
+        }
+        .content-list li{
+            margin-bottom:4px;
+        }
+        .content-divider{
+            margin:32px 0;
+        }
+        .contributors-card{
+            position:static;
+            width:calc(100% - 20px);
+            margin:0 10px;
+            padding:20px;
+            border-radius:16px;
+        }
+        .contributors-title{
+            font-size:22px;
+            margin-bottom:16px;
+            text-align:center;
+        }
+        .contributor{
+            padding:12px 0;
+        }
+        .contributor-avatar{
+            width:46px;
+            height:46px;
+        }
+        .contributor-name{
+            font-size:15px;
+        }
+        .contributor-role{
+            font-size:12px;
+        }
+        .contributor-rank{
+            width:26px;
+            height:33px;
+        }
+        .contributor-count{
+            font-size:15px;
+        }
+    }
+
+</style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-left">
+            <button id="menuBtn" class="icon-btn">
+                蛊
+            </button>
+            <a class="nav-btn active" href="/browse">
+                Browse
+            </a>
+        </div>
+        <div class="nav-right">
+            <button id="profileBtn" class="profile-btn hidden"></button>
+        </div>
+    </nav>
+
+    <div id="profileMenu" class="profile-menu hidden">
+        <button id="profilePageBtn" class="profile-menu-user">
+            <img id="menuAvatar" class="profile-menu-avatar">
+            <div class="profile-menu-info">
+                <div id="menuName" class="profile-menu-name"></div>
+                <div id="menuRole" class="profile-menu-role"></div>
+            </div>
+        </button>
+        <button id="logoutBtn" class="logout-btn">
+            <span>Log Out</span>
+            <svg xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+        </button>
+    </div>
+
+<main>
+
+    <div id="allianceInfo" class="alliance-info">
+        <h1 id="allianceTitle" class="alliance-title">
+            Heaven And Earth Great Love Alliance
+        </h1>
+        <div id="allianceSubtitle" class="alliance-subtitle">
+            Main Server connecting readers, creators, partners, and the project of Immortal Library
+        </div>
+    </div>
+
+    <div class="alliance-cards">
+
+        <div id="cardFiction" class="card-slot card-left">
+            <div class="discord-card">
+                <div class="banner"
+                    style="background-image:url('https://cdn.discordapp.com/splashes/693754652352839771/6ca23d9b0246297b1a9aaa89a7c4cdfc.png?size=2048');">
+                </div>
+                <div class="content">
+                    <img
+                        class="server-icon"
+                        id="serverIconFC"
+                        src="https://cdn.discordapp.com/icons/693754652352839771/dce1ad824f563e0f5d37497a6e9ef698.png?size=1024">
+                    <div class="server-name" id="serverNameFC">
+                        Loading...
+                    </div>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="dot online"></div>
+                            <span id="onlineCountFC">-- Online</span>
+                        </div>
+                        <div class="stat">
+                            <div class="dot members"></div>
+                            <span id="memberCountFC">-- Members</span>
+                        </div>
+                    </div>
+                    <div class="created">
+                        Est. Mar 2020
+                    </div>
+                    <div class="description">
+                        A fiction-focused community for anime, manga, visual novels,
+                        webnovels...
+                    </div>
+                    <div class="tags">
+                        <div class="tag">
+                            <img src="assets/Fiction.svg">
+                            Fiction
+                        </div>
+                        <div class="tag">
+                            <img src="assets/Chill.svg">
+                            Chill
+                        </div>
+                        <div class="tag">
+                            <img src="assets/Animanga.svg">
+                            Animanga
+                        </div>
+                        <div class="tag">
+                            <img src="assets/VisualNovel.svg">
+                            Visual Novels
+                        </div>
+                        <div class="tag">
+                            <img src="assets/Games.svg">
+                            Games
+                        </div>
+                    </div>
+                    <a
+                        class="join"
+                        href="https://discord.gg/7fZsKeG3d6"
+                        target="_blank">
+                        Join Server
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="cardAlliance" class="card-slot card-center">
+            <div class="discord-card">
+                <div class="banner"></div>
+                <div class="content">
+                    <img
+                        class="server-icon"
+                        id="serverIcon"
+                        src="https://cdn.discordapp.com/icons/1398024265655128194/a_9bdbec4b3d2589ef32258b5e77170184.gif?size=256">
+                    <div class="server-name" id="serverName">
+                        Loading...
+                    </div>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="dot online"></div>
+                            <span id="onlineCount">-- Online</span>
+                        </div>
+                        <div class="stat">
+                            <div class="dot members"></div>
+                            <span id="memberCount">-- Members</span>
+                        </div>
+                    </div>
+                    <div class="created">
+                        Est. Jul 2025
+                    </div>
+                    <a
+                        class="join"
+                        href="https://discord.gg/nFqvyYtJ8c"
+                        target="_blank">
+                        Join Server
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="cardHF" class="card-slot card-right">
+            <div class="discord-card">
+                <div class="banner" style="background-image:url('https://cdn.discordapp.com/splashes/1506449807366029473/8e4e3420cd63923fbe4a71c0fa8cd01a.png?size=2048');"></div>
+                <div class="content">
+                    <img
+                        class="server-icon"
+                        id="serverIconHF"
+                        src="https://cdn.discordapp.com/icons/1506449807366029473/3488f15a30fa3e5bcc9a03d8c918e23a.png?size=1024">
+                    <div class="server-name" id="serverNameHF">
+                        Loading...
+                    </div>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="dot online"></div>
+                            <span id="onlineCountHF">-- Online</span>
+                        </div>
+                        <div class="stat">
+                            <div class="dot members"></div>
+                            <span id="memberCountHF">-- Members</span>
+                        </div>
+                    </div>
+                    <div class="created">
+                        Est. May 2026
+                    </div>
+                    <div class="description">
+                        A court for cultivators to trade madness and meaningless nonsense.
+                    </div>
+                    <div class="tags">
+                        <div class="tag">
+                            <img src="assets/HeavenFall.svg" alt="">
+                            HeavenFall
+                        </div>
+                        <div class="tag">
+                            <img src="assets/Novel.svg" alt="">
+                            Novel
+                        </div>
+                        <div class="tag">
+                            <img src="assets/Comic.svg" alt="">
+                            Comic
+                        </div>
+                        <div class="tag">
+                            <img src="assets/Series.svg" alt="">
+                            Series
+                        </div>
+                        <div class="tag">
+                            <img src="assets/Random.svg" alt="">
+                            Random
+                        </div>
+                    </div>
+                    <a
+                        class="join"
+                        href="https://discord.gg/kMHRQcK52z"
+                        target="_blank">
+                        Join Server
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+<section class="alliance-section">
+
+    <div class="join-track">
+        <div class="join-group">
+            <span>JOIN DISCORD</span>
+            <span>JOIN DISCORD</span>
+            <span>JOIN DISCORD</span>
+            <span>JOIN DISCORD</span>
+            <span>JOIN DISCORD</span>
+        </div>
+        <div class="join-group" aria-hidden="true">
+            <span>JOIN DISCORD</span>
+            <span>JOIN DISCORD</span>
+            <span>JOIN DISCORD</span>
+            <span>JOIN DISCORD</span>
+            <span>JOIN DISCORD</span>
+        </div>
+    </div>
+
+</section>
+
+<section class="content-section">
+    <div class="content-layout">
+        <div class="content-wrapper">
+            <h1 class="content-title">
+                Alliance Information
+            </h1>
+            <h2 class="content-heading">
+                Heaven And Earth Great Love Alliance
+            </h2>
+            <p class="content-text">
+                Heaven And Earth Great Love Alliance is the headquarters of the alliance. Inspired by <strong class="content-strong">Reverend Insanity</strong>, it is home to readers who enjoy discussing its characters, philosophies, cultivation paths, theories, lore, memes, and countless <strong class="content-strong">"What If?"</strong> scenarios.
+            </p>
+            <h3 class="content-subheading">
+                Highlights
+            </h3>
+            <ul class="content-list">
+                <li>Main headquarters of the alliance.</li>
+                <li>Community inspired by Reverend Insanity.</li>
+                <li>Discussions, theories, lore, and philosophy.</li>
+                <li>Cultivation-related conversations.</li>
+                <li>Community events and collaborations.</li>
+            </ul>
+            <div class="content-divider"></div>
+            <h2 class="content-heading">
+                Immortal Court
+            </h2>
+            <p class="content-text">
+                Immortal Court is the official development community of <strong class="content-strong">Immortal Library</strong>. It serves as the home of ongoing projects created by <strong class="content-strong">Febris GG</strong>, including novels, software, websites, and future creative works.
+            </p>
+            <p class="content-text">
+                Members can follow development progress, receive previews, participate in discussions, provide feedback, and witness ideas gradually becoming reality.
+            </p>
+            <h3 class="content-subheading">
+                Highlights
+            </h3>
+            <ul class="content-list">
+                <li>Official Immortal Library development server.</li>
+                <li>Development updates and announcements.</li>
+                <li>Original novels and coding projects.</li>
+                <li>Community feedback and testing.</li>
+                <li>Behind-the-scenes development.</li>
+                <li>Home of the developer.</li>
+            </ul>
+            <div class="content-divider"></div>
+            <h2 class="content-heading">
+                Fire Zone
+            </h2>
+            <p class="content-text">
+                Fire Zone is an all-purpose fiction community dedicated to bringing together fans from every corner of fictional media, whether it be anime, manga, novels, web novels, visual novels, games, or films.
+            </p>
+            <h3 class="content-subheading">
+                Highlights
+            </h3>
+            <ul class="content-list">
+                <li>General fiction community.</li>
+                <li>Animanga discussions.</li>
+                <li>Novels and web novels.</li>
+                <li>Visual novels and games.</li>
+                <li>Recommendations and community events.</li>
+                <li>Casual conversations and entertainment.</li>
+            </ul>
+            <div class="content-divider"></div>
+            <h2 class="content-heading">
+                Alliance Principles
+            </h2>
+            <ul class="content-list">
+                <li>Every server maintains its own unique identity.</li>
+                <li>Members are welcome across every allied community.</li>
+                <li>Collaboration is encouraged over competition.</li>
+                <li>Respect every community and its leadership.</li>
+                <li>Support creators, readers, and original works.</li>
+                <li>Grow together while preserving each community's individuality.</li>
+            </ul>
+            <div class="content-divider"></div>
+            <h2 class="content-heading">
+                Roles Within the Alliance
+            </h2>
+            <p class="content-text">
+                Although each community remains independent, every server fulfills a unique responsibility within the alliance.
+            </p>
+            <h3 class="content-subheading">
+                Heaven And Earth Great Love Alliance
+            </h3>
+            <ul class="content-list">
+                <li>Headquarters of the alliance.</li>
+                <li>Central community connecting all allied servers.</li>
+                <li>Main source of EPUB preservation and distribution.</li>
+                <li>Primary hub for alliance announcements and collaborations.</li>
+                <li>Focused on the Reverend Insanity fandom and cultivation discussions.</li>
+            </ul>
+            <h3 class="content-subheading">
+                Immortal Court
+            </h3>
+            <ul class="content-list">
+                <li>Official development branch of the alliance.</li>
+                <li>Responsible for the development and maintenance of Immortal Library.</li>
+                <li>Develops and maintains the website, backend services, and future projects.</li>
+                <li>Oversees technical infrastructure and long-term development.</li>
+                <li>Works alongside allied communities to improve the library.</li>
+            </ul>
+            <h3 class="content-subheading">
+                Fire Zone
+            </h3>
+            <ul class="content-list">
+                <li>Official allied community of the alliance.</li>
+                <li>Broad fiction community welcoming readers of every genre.</li>
+                <li>Contributes to EPUB preservation and sharing.</li>
+                <li>Provides Visual Novel and fiction-related EPUBs.</li>
+                <li>Supports cross-community events and collaborations.</li>
+            </ul>
+        </div>
+        <aside class="contributors-card">
+            <h2 class="contributors-title">
+                Top Contributors
+            </h2>
+            <div class="contributor">
+                <a
+                    id="topContributorLink"
+                    href="/profile?uid=H8W7QZ61jtaXbdubMa3Veccg4j92"
+                    style="
+                        display:flex;
+                        align-items:center;
+                        gap:14px;
+                        flex:1;
+                        text-decoration:none;
+                        min-width:0;
+                    "
+                >
+                    <img
+                        id="topContributorAvatar"
+                        class="contributor-avatar"
+                        src="assets/febris.jpg"
+                        alt="Top Contributor"
+                    >
+                    <div style="min-width:0;">
+                        <div
+                            id="topContributorName"
+                            class="contributor-name"
+                            style="
+                                white-space:nowrap;
+                                overflow:hidden;
+                                text-overflow:ellipsis;
+                            "
+                        >
+                            Loading...
+                        </div>
+                        <div class="contributor-role">
+                            Sole Developer
+                        </div>
+                    </div>
+                </a>
+                <img
+                    class="contributor-rank"
+                    src="assets/1.png"
+                    alt="1st Place"
+                >
+            </div>
+            <div class="contributor">
+                <img
+                    class="contributor-avatar"
+                    src="assets/stoum.png"
+                    alt="Stoum"
+                >
+                <div>
+                    <div class="contributor-name">Stoum</div>
+                    <div class="contributor-role">Security Contributor</div>
+                </div>
+                <img
+                    class="contributor-rank"
+                    src="assets/2.png"
+                    alt="2nd Place"
+                >
+            </div>
+            <div class="contributor">
+                <img
+                    class="contributor-avatar"
+                    src="assets/ug.png"
+                    alt="UG"
+                >
+                <div>
+                    <div class="contributor-name">UG</div>
+                    <div class="contributor-role">Alliance Founder</div>
+                </div>
+                <img
+                    class="contributor-rank"
+                    src="assets/3.png"
+                    alt="3rd Place"
+                >
+            </div>
+            <div class="contributor">
+                <img
+                    class="contributor-avatar"
+                    src="assets/nameless Traveller.png"
+                    alt="Nameless Traveller"
+                >
+                <div>
+                    <div class="contributor-name">Nameless Traveller</div>
+                    <div class="contributor-role">Administrator</div>
+                </div>
+                <div class="contributor-count">#4</div>
+            </div>
+        </aside>
+    </div>
+
+</section>
+
+    <footer>
+        <div style="font-family:Cinzel,serif;font-size:28px;color:var(--gold);margin-bottom:12px;">
+            蛊
+        </div>
+        <div style="font-size:22px;margin-bottom:10px;">
+            Immortal Library
+        </div>
+        <div class="footer-description">
+            An ever-growing library dedicated to preserving Literature for readers around the world
+        </div>
+        <div style="margin-top:40px;color:#666;font-size:14px;">
+            © 2026 Febris Forge. All Rights Reserved
+        </div>
+        <div style="margin-top:12px;font-size:13px;">
+            <a class="footer-link privacy-link" href="/pp">Privacy Policy</a>
+            <span class="footer-divider">•</span>
+            <a class="footer-link terms-link" href="/tos">Terms of Service</a>
+        </div>
+    </footer>
+
+    <div id="errorModal" class="modal hidden">
+        <div class="modal-card">
+            <h2 id="errorTitle">
+                Access Denied
+            </h2>
+            <p id="errorMessage">
+                You are not an administrator
+            </p>
+            <button id="closeErrorModal">
+                Close
+            </button>
+        </div>
+    </div>
+
+<script type="module">
+
+    import { auth, db } from "./src/firebase";
+
+    import {
+        onAuthStateChanged,
+        signOut
+    } from "firebase/auth";
+
+    import {
+        doc,
+        getDoc
+    } from "firebase/firestore";
+
+    const profileBtn=document.getElementById("profileBtn");
+    const errorModal=document.getElementById("errorModal");
+    const errorTitle=document.getElementById("errorTitle");
+    const errorMessage=document.getElementById("errorMessage");
+    const closeErrorModal=document.getElementById("closeErrorModal");
+    const menuBtn=document.getElementById("menuBtn");
+    const profileMenu=document.getElementById("profileMenu");
+    const menuAvatar=document.getElementById("menuAvatar");
+    const menuName=document.getElementById("menuName");
+    const menuRole=document.getElementById("menuRole");
+    const profilePageBtn=document.getElementById("profilePageBtn");
+    const logoutBtn=document.getElementById("logoutBtn");
+
+    let ignoreScrollUntil = 0;
+
+    function showLoggedIn(profile,isOwner){
+        profileBtn.classList.remove("hidden");
+        profileBtn.innerHTML=`
+            <img src="${profile.avatar}" class="admin-avatar">
+        `;
+        menuAvatar.src=profile.avatar;
+        menuName.textContent=profile.displayName;
+        menuRole.textContent=isOwner ? "Owner" : "Administrator";
+    }
+        
+    onAuthStateChanged(auth, async (user) => {
+        try{
+            if(!user){
+                profileBtn.classList.add("hidden");
+                profileBtn.innerHTML = "";
+                profileMenu.classList.add("hidden");
+                return;
+            }
+            const adminDoc = await getDoc(
+                doc(db, "admins", user.email.toLowerCase())
+            );
+            if(!adminDoc.exists()){
+                await signOut(auth);
+                profileBtn.classList.add("hidden");
+                profileBtn.innerHTML = "";
+                profileMenu.classList.add("hidden");
+                return;
+            }
+            const profileDoc = await getDoc(
+                doc(db, "userdata", user.uid)
+            );
+            if(!profileDoc.exists()){
+                throw new Error("User profile not found.");
+            }
+            showLoggedIn(
+                profileDoc.data(),
+                adminDoc.data().owner === true
+            );
+        }
+        catch(err){
+            console.error(err);
+        }
+    });
+
+    const topContributorAvatar = document.getElementById("topContributorAvatar");
+    const topContributorName = document.getElementById("topContributorName");
+    (async()=>{
+        try{
+            const uid = "H8W7QZ61jtaXbdubMa3Veccg4j92";
+            const profileDoc = await getDoc(
+                doc(
+                    db,
+                    "userdata",
+                    uid
+                )
+            );
+            if(profileDoc.exists()){
+                const profile = profileDoc.data();
+                topContributorAvatar.src = profile.avatar;
+                topContributorName.textContent = profile.displayName;
+            }
+        }
+        catch(err){
+            console.error(err);
+        }
+    })();
+
+    profileBtn.onclick = (e) => {
+        e.stopPropagation();
+        const openMenu = () => {
+            ignoreScrollUntil = Date.now() + 400;
+            profileMenu.classList.remove("hidden");
+        };
+        if (window.scrollY > 30) {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+            const waitForTop = () => {
+                if (window.scrollY <= 5) {
+                    openMenu();
+                } else {
+                    requestAnimationFrame(waitForTop);
+                }
+            };
+            requestAnimationFrame(waitForTop);
+        } else {
+            profileMenu.classList.toggle("hidden");
+        }
+    };
+
+    document.addEventListener("click",(e)=>{
+        if(
+            !profileMenu.contains(e.target)
+            &&
+            !profileBtn.contains(e.target)
+        ){
+            profileMenu.classList.add("hidden");
+        }
+    });
+
+    window.addEventListener("scroll", () => {
+        if (Date.now() < ignoreScrollUntil) return;
+        if (!profileMenu.classList.contains("hidden")) {
+            profileMenu.classList.add("hidden");
+        }
+    });
+
+    logoutBtn.onclick=async()=>{
+        profileMenu.classList.add("hidden");
+        await signOut(auth);
+    };
+
+    profilePageBtn.onclick=()=>{
+        window.location.href="/profile";
+    };
+
+    menuBtn.onclick = () => {
+        window.location.href = "/index";
+    };
+
+    // Immortal Court
+    const serverNameHF = document.getElementById("serverNameHF");
+    const onlineCountHF = document.getElementById("onlineCountHF");
+    const memberCountHF = document.getElementById("memberCountHF");
+    async function loadDiscordHF(){
+        try{
+            const invite = await fetch(
+                `https://discord.com/api/v10/invites/kMHRQcK52z?with_counts=true&t=${Date.now()}`
+            ).then(r => r.json());
+            serverNameHF.textContent = invite.guild.name;
+            memberCountHF.textContent = `${invite.approximate_member_count} Members`;
+            onlineCountHF.textContent = `${invite.approximate_presence_count} Online`;
+        }
+        catch(err){
+            console.error(err);
+        }
+    }
+    loadDiscordHF();
+    setInterval(loadDiscordHF,30000);
+
+    // Great Love Alliance
+    const serverName  = document.getElementById("serverName");
+    const onlineCount = document.getElementById("onlineCount");
+    const memberCount = document.getElementById("memberCount");
+    async function loadDiscord(){
+        try{
+            const invite = await fetch(
+                `https://discord.com/api/v10/invites/nFqvyYtJ8c?with_counts=true&t=${Date.now()}`
+            ).then(r => r.json());
+            serverName.textContent = invite.guild.name;
+            memberCount.textContent =
+                `${invite.approximate_member_count} Members`;
+            onlineCount.textContent =
+                `${invite.approximate_presence_count} Online`;
+        }
+        catch(err){
+            console.error(err);
+        }
+    }
+    loadDiscord();
+    setInterval(loadDiscord,30000);
+
+    // Fire Zone
+    const serverNameFC = document.getElementById("serverNameFC");
+    const onlineCountFC = document.getElementById("onlineCountFC");
+    const memberCountFC = document.getElementById("memberCountFC");
+    async function loadDiscordFC(){
+        try{
+            const invite = await fetch(
+                `https://discord.com/api/v10/invites/7fZsKeG3d6?with_counts=true&t=${Date.now()}`
+            ).then(r => r.json());
+
+            serverNameFC.textContent = invite.guild.name;
+            memberCountFC.textContent = `${invite.approximate_member_count} Members`;
+            onlineCountFC.textContent = `${invite.approximate_presence_count} Online`;
+        }
+        catch(err){
+            console.error(err);
+        }
+    }
+    loadDiscordFC();
+    setInterval(loadDiscordFC,30000);
+
+    // Rotate Animations
+    const cards=[
+        document.getElementById("cardFiction"),
+        document.getElementById("cardAlliance"),
+        document.getElementById("cardHF")
+    ];
+
+    const allianceTitle=document.getElementById("allianceTitle");
+    const allianceSubtitle=document.getElementById("allianceSubtitle");
+    const allianceInfo=document.getElementById("allianceInfo");
+    const cardInformation=[
+        {
+            title:"Fire Zone",
+            subtitle:"Allied community of Fiction, Animanga, Visual Novels, Games, and more"
+        },
+        {
+            title:"Heaven And Earth Great Love Alliance",
+            subtitle:"Main Server connecting readers, creators, partners, and the project of Immortal Library"
+        },
+        {
+            title:"Immortal Court",
+            subtitle:"Official Development Server of Immortal Library"
+        }
+    ];
+
+    let center=1;
+    let isAnimating = false;
+    const ANIMATION_DURATION = 750;
+
+    function updateCards(){
+        const left=(center+2)%3;
+        const right=(center+1)%3;
+        cards.forEach(card=>{
+            card.classList.remove(
+                "card-left",
+                "card-center",
+                "card-right"
+            );
+        });
+        cards[left].classList.add("card-left");
+        cards[center].classList.add("card-center");
+        cards[right].classList.add("card-right");
+        allianceInfo.classList.add("fade");
+        setTimeout(()=>{
+            allianceTitle.textContent=
+                cardInformation[center].title;
+            allianceSubtitle.textContent=
+                cardInformation[center].subtitle;
+            allianceInfo.classList.remove("fade");
+        },300);
+    }
+
+    function next(){
+        if(isAnimating) return;
+        isAnimating = true;
+        center = (center + 1) % 3;
+        updateCards();
+        setTimeout(() => {
+            isAnimating = false;
+        }, ANIMATION_DURATION);
+    }
+
+    function previous(){
+        if(isAnimating) return;
+        isAnimating = true;
+        center = (center + 2) % 3;
+        updateCards();
+        setTimeout(() => {
+            isAnimating = false;
+        }, ANIMATION_DURATION);
+    }
+
+    cards.forEach((card,index)=>{
+        card.onclick=()=>{
+            if(isAnimating) return;
+            if(index===center){
+                resetAuto();
+                return;
+            }
+            if(index===(center+1)%3){
+                next();
+            }else{
+                previous();
+            }
+            resetAuto();
+        };
+    });
+
+    // Mobile swipe support
+    const cardsContainer = document.querySelector(".alliance-cards");
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const SWIPE_THRESHOLD = 45;
+    cardsContainer.addEventListener("touchstart", (e) => {
+        touchStartX = e.changedTouches[0].clientX;
+    }, { passive: true });
+    cardsContainer.addEventListener("touchend", (e) => {
+        touchEndX = e.changedTouches[0].clientX;
+        const diff = touchEndX - touchStartX;
+        if (Math.abs(diff) < SWIPE_THRESHOLD) return;
+        if (isAnimating) return;
+        if (diff < 0){
+            next();
+        }else{
+            previous();
+        }
+        resetAuto();
+    }, { passive: true });
+
+    let auto;
+    function resetAuto(){
+        clearInterval(auto);
+        auto=setInterval(next,5000);
+    }
+    resetAuto();
+
+    allianceTitle.textContent = cardInformation[center].title;
+    allianceSubtitle.textContent = cardInformation[center].subtitle;
+
+</script>
+
+</body>
+</html>

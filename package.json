@@ -1,0 +1,21 @@
+{
+  "name": "epub.site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "EPUB SITE",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "firebase": "^12.15.0",
+    "googleapis": "^173.0.0",
+    "multer": "^2.2.0"
+  },
+  "devDependencies": {
+    "vite": "^7.2.4",
+    "vite-plugin-static-copy": "^3.1.4"
+  }
+}
