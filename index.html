@@ -3197,6 +3197,339 @@
         let translateX = 0;
         let autoSlide;
         let pauseUntil = 0;
+        let centerSlot = 0;
+        let recycleBuffer = 5;
+        let isTransitioning = false;
+        let pendingTargetIndex = null;
+        let transitionTargetIndex = null;
+        let transitionToken = 0;
+        let trackTransitionHandler = null;
+        let interactionLocked = false;
+        let heldDirection = 0;
+        let keyboardHoldStart = 0;
+        let keyboardLoopRunning = false;
+        let keyboardLoopToken = 0;
+        let carouselIdleResolvers = [];
+
+        function normalizeBookIndex(index){
+            const total = books.length;
+            if(total <= 0){
+                return 0;
+            }
+            return ((index % total) + total) % total;
+        }
+
+        function getNavigationAnchorIndex(){
+            if(pendingTargetIndex !== null){
+                return pendingTargetIndex;
+            }
+            if(isTransitioning && transitionTargetIndex !== null){
+                return transitionTargetIndex;
+            }
+            return activeIndex;
+        }
+
+        function notifyCarouselIdle(){
+            if(
+                isTransitioning ||
+                pendingTargetIndex !== null ||
+                dragging
+            ){
+                return;
+            }
+            const resolvers = carouselIdleResolvers.splice(0);
+            resolvers.forEach(resolve=>{
+                resolve();
+            });
+        }
+
+        function waitForCarouselIdle(){
+            if(
+                !isTransitioning &&
+                pendingTargetIndex === null &&
+                !dragging
+            ){
+                return Promise.resolve();
+            }
+            return new Promise(resolve=>{
+                carouselIdleResolvers.push(resolve);
+            });
+        }
+
+        function getKeyboardStepDelay(){
+            const heldMs = performance.now() - keyboardHoldStart;
+            if(heldMs >= 9000){
+                return 220;
+            }
+            if(heldMs >= 7000){
+                return 260;
+            }
+            if(heldMs >= 5000){
+                return 300;
+            }
+            return 350;
+        }
+
+        function getNavigationDuration(){
+            if(heldDirection !== 0){
+                return getKeyboardStepDelay();
+            }
+            return 350;
+        }
+
+        function waitForKeyboardStep(token){
+            const delay = getKeyboardStepDelay();
+            const startedAt = performance.now();
+            return new Promise(resolve=>{
+                function tick(){
+                    if(
+                        token !== keyboardLoopToken ||
+                        heldDirection === 0
+                    ){
+                        resolve(false);
+                        return;
+                    }
+                    if(performance.now() - startedAt >= delay){
+                        resolve(true);
+                        return;
+                    }
+                    requestAnimationFrame(tick);
+                }
+                requestAnimationFrame(tick);
+            });
+        }
+
+        async function runKeyboardNavigationLoop(){
+            if(keyboardLoopRunning){
+                return;
+            }
+            keyboardLoopRunning = true;
+            const token = ++keyboardLoopToken;
+            while(
+                heldDirection !== 0 &&
+                token === keyboardLoopToken
+            ){
+                await waitForCarouselIdle();
+                if(
+                    heldDirection === 0 ||
+                    token !== keyboardLoopToken
+                ){
+                    break;
+                }
+                pauseAutoSlide(10000);
+                goTo(getNavigationAnchorIndex() + heldDirection);
+                const [, keepHolding] = await Promise.all([
+                    waitForCarouselIdle(),
+                    waitForKeyboardStep(token)
+                ]);
+                if(!keepHolding){
+                    break;
+                }
+            }
+            if(token === keyboardLoopToken){
+                keyboardLoopRunning = false;
+            }
+        }
+
+        function stopKeyboardNavigation(){
+            heldDirection = 0;
+            keyboardHoldStart = 0;
+            keyboardLoopToken++;
+            keyboardLoopRunning = false;
+        }
+
+        function clearTrackTransitionHandler(){
+            if(trackTransitionHandler){
+                bookTrack.removeEventListener(
+                    "transitionend",
+                    trackTransitionHandler
+                );
+                trackTransitionHandler = null;
+            }
+        }
+
+        function finishCarouselTransition(token){
+            if(token !== transitionToken){
+                return;
+            }
+            clearTrackTransitionHandler();
+            isTransitioning = false;
+            transitionTargetIndex = null;
+            interactionLocked = false;
+            bookTrack.style.transition = "none";
+            syncTrackTransform();
+            applyActiveCard();
+            requestAnimationFrame(()=>{
+                refreshHover();
+                if(
+                    !dragging &&
+                    pendingTargetIndex !== null &&
+                    pendingTargetIndex !== activeIndex
+                ){
+                    const nextTarget = pendingTargetIndex;
+                    pendingTargetIndex = null;
+                    activeIndex = nextTarget;
+                    updateCarousel();
+                    return;
+                }
+                pendingTargetIndex = null;
+                notifyCarouselIdle();
+            });
+        }
+
+        function getCenteredTranslate(){
+            if(cards.length === 0){
+                return 0;
+            }
+            return (
+                viewport.clientWidth / 2
+                -
+                (
+                    centerSlot * cardStep
+                    +
+                    cards[0].offsetWidth / 2
+                )
+            );
+        }
+
+        function syncTrackTransform(){
+            bookTrack.style.transform =
+                `translate3d(${translateX}px,0,0)`;
+        }
+
+        function recycleTrack(steps){
+            const total = cards.length;
+            if(total <= 1 || steps === 0){
+                return;
+            }
+            if(steps > 0){
+                for(let i = 0; i < steps; i++){
+                    const first = cards.shift();
+                    bookTrack.appendChild(first);
+                    cards.push(first);
+                }
+                return;
+            }
+            for(let i = 0; i < Math.abs(steps); i++){
+                const last = cards.pop();
+                bookTrack.prepend(last);
+                cards.unshift(last);
+            }
+        }
+
+        function getNearestCard(){
+            if(cards.length === 0){
+                return null;
+            }
+            let nearest = cards[0];
+            let best = Infinity;
+            cards.forEach((card,index)=>{
+                const center =
+                    translateX +
+                    index * cardStep +
+                    cards[0].offsetWidth / 2;
+                const dist = Math.abs(
+                    center - viewport.clientWidth / 2
+                );
+                if(dist < best){
+                    best = dist;
+                    nearest = card;
+                }
+            });
+            return nearest;
+        }
+
+        function getRecycleBuffer(){
+            return Math.max(
+                1,
+                Math.min(
+                    recycleBuffer,
+                    centerSlot,
+                    cards.length - centerSlot - 1
+                )
+            );
+        }
+
+        function keepCardNearCenter(bookIndex, forceCenter = false){
+            if(cards.length <= 1){
+                return false;
+            }
+            const card = cards.find(candidate=>{
+                return Number(candidate.dataset.index) === bookIndex;
+            });
+            if(!card){
+                return false;
+            }
+            const cardSlot = cards.indexOf(card);
+            const buffer = getRecycleBuffer();
+            const minSlot = forceCenter ? centerSlot : buffer;
+            const maxSlot = forceCenter
+                ? centerSlot
+                : cards.length - 1 - buffer;
+            if(cardSlot >= minSlot && cardSlot <= maxSlot){
+                return false;
+            }
+            const shift = cardSlot - centerSlot;
+            recycleTrack(shift);
+            translateX += shift * cardStep;
+            startTranslate += shift * cardStep;
+            bookTrack.style.transition = "none";
+            syncTrackTransform();
+            return true;
+        }
+
+        function applyActiveCard(){
+            let activeCard = null;
+            if(dragging){
+                activeCard = getNearestCard();
+            }else{
+                const currentBook = normalizeBookIndex(activeIndex);
+                activeCard = cards.find(card=>{
+                    return Number(card.dataset.index) === currentBook;
+                });
+            }
+            cards.forEach(card=>{
+                card.classList.remove("active");
+            });
+            if(activeCard){
+                activeCard.classList.add("active");
+                updateMainBackground(
+                    Number(activeCard.dataset.index)
+                );
+                return;
+            }
+            updateMainBackground();
+        }
+
+        function settleTrack(){
+            const currentBook = normalizeBookIndex(activeIndex);
+            keepCardNearCenter(currentBook,true);
+            translateX = getCenteredTranslate();
+            bookTrack.style.transition = "none";
+            syncTrackTransform();
+            applyActiveCard();
+        }
+
+        function cancelTrackAnimation(){
+            transitionToken++;
+            clearTrackTransitionHandler();
+            isTransitioning = false;
+            pendingTargetIndex = null;
+            transitionTargetIndex = null;
+            interactionLocked = false;
+            const computed = getComputedStyle(bookTrack).transform;
+            if(computed && computed !== "none"){
+                translateX = new DOMMatrixReadOnly(computed).m41;
+            }
+            bookTrack.style.transition = "none";
+            syncTrackTransform();
+            const nearestCard = getNearestCard();
+            if(nearestCard){
+                activeIndex = Number(nearestCard.dataset.index);
+                applyActiveCard();
+            }
+            notifyCarouselIdle();
+        }
 
         function isFeaturedLoading(){
             return bookTrack.querySelector(".book-card.placeholder") !== null;
@@ -3290,7 +3623,7 @@
                     }
                     pauseAutoSlide(10000);
                     const clickedIndex = Number(card.dataset.index);
-                    const currentBook = activeIndex % books.length;
+                    const currentBook = normalizeBookIndex(activeIndex);
                     if(clickedIndex === currentBook){
                         window.location.href = `/book?id=${book.bookId}`;
                         return;
@@ -3303,8 +3636,6 @@
                 clampTitle(title);
             };
             books.forEach(render);
-            books.forEach(render);
-            books.forEach(render);
             cards=[...bookTrack.children];
         }
 
@@ -3316,17 +3647,23 @@
             const style=getComputedStyle(bookTrack);
             const gap=parseFloat(style.gap);
             cardStep=cards[0].offsetWidth+gap;
+            centerSlot = Math.floor(cards.length / 2);
             if(books.length){
                 activeIndex = Math.floor(Math.random()*books.length);
-                activeIndex += books.length;
             }else{
                 activeIndex = Math.floor(cards.length/2);
             }
-            updateCarousel();
+            settleTrack();
+            requestAnimationFrame(()=>{
+                refreshHover();
+            });
         }
 
-        function updateMainBackground(){
-            const cover = books[activeIndex % books.length]?.coverUrl;
+        function updateMainBackground(bookIndex = activeIndex){
+            if(books.length === 0){
+                return;
+            }
+            const cover = books[normalizeBookIndex(bookIndex)]?.coverUrl;
             if(!cover){
                 return;
             }
@@ -3340,27 +3677,73 @@
             if(cards.length === 0){
                 return;
             }
-            cards.forEach(card=>{
-                card.classList.remove("active");
-            });
-            if(cards[activeIndex]){
-                cards[activeIndex].classList.add("active");
+            const requestedIndex = normalizeBookIndex(activeIndex);
+            if(isTransitioning){
+                pendingTargetIndex = requestedIndex;
+                return;
             }
-            updateMainBackground();
-            translateX =
-                viewport.clientWidth/2
-                -
-                (
-                    activeIndex * cardStep
-                    +
-                    cards[0].offsetWidth/2
-                );
-            bookTrack.style.transform =
-                `translate3d(${translateX}px,0,0)`;
-            requestAnimationFrame(()=>{
-                normalizeCarousel();
-                refreshHover();
+            activeIndex = requestedIndex;
+            const recycled = keepCardNearCenter(activeIndex);
+            if(recycled){
+                bookTrack.offsetWidth;
+            }
+            applyActiveCard();
+            const activeCard = cards.find(card=>{
+                return Number(card.dataset.index) === activeIndex;
             });
+            if(!activeCard){
+                return;
+            }
+            const steps = cards.indexOf(activeCard) - centerSlot;
+            const targetTranslate =
+                getCenteredTranslate() - steps * cardStep;
+            const shouldAnimate =
+                Math.abs(targetTranslate - translateX) > .5;
+            if(!shouldAnimate){
+                interactionLocked = false;
+                translateX = targetTranslate;
+                bookTrack.style.transition = "none";
+                syncTrackTransform();
+                requestAnimationFrame(()=>{
+                    refreshHover();
+                    if(
+                        !dragging &&
+                        pendingTargetIndex !== null &&
+                        pendingTargetIndex !== activeIndex
+                    ){
+                        const nextTarget = pendingTargetIndex;
+                        pendingTargetIndex = null;
+                        activeIndex = nextTarget;
+                        updateCarousel();
+                        return;
+                    }
+                    pendingTargetIndex = null;
+                    notifyCarouselIdle();
+                });
+                return;
+            }
+            isTransitioning = true;
+            transitionTargetIndex = activeIndex;
+            interactionLocked = true;
+            const token = ++transitionToken;
+            clearTrackTransitionHandler();
+            trackTransitionHandler = event=>{
+                if(
+                    event.target !== bookTrack ||
+                    event.propertyName !== "transform"
+                ){
+                    return;
+                }
+                finishCarouselTransition(token);
+            };
+            bookTrack.addEventListener(
+                "transitionend",
+                trackTransitionHandler
+            );
+            translateX = targetTranslate;
+            bookTrack.style.transition =
+                `transform ${getNavigationDuration()}ms cubic-bezier(.22,.8,.2,1)`;
+            syncTrackTransform();
         }
 
         function refreshHover(){
@@ -3384,38 +3767,32 @@
         }
 
         function goTo(index){
-            const total = books.length;
-            index = ((index % total) + total) % total;
-            const currentCycle = Math.floor(activeIndex / total);
-            const candidates = [
-                index + (currentCycle - 1) * total,
-                index + currentCycle * total,
-                index + (currentCycle + 1) * total
-            ];
-            activeIndex = candidates.reduce((best, candidate)=>{
-                return Math.abs(candidate - activeIndex)
-                    <
-                    Math.abs(best - activeIndex)
-                    ? candidate
-                    : best;
-            });
-            bookTrack.style.transition = "transform .35s cubic-bezier(.22,.8,.2,1)";
+            if(books.length === 0){
+                return;
+            }
+            const nextIndex = normalizeBookIndex(index);
+            if(dragging){
+                pendingTargetIndex = null;
+                activeIndex = nextIndex;
+                return;
+            }
+            if(isTransitioning){
+                pendingTargetIndex = nextIndex;
+                return;
+            }
+            activeIndex = nextIndex;
             updateCarousel();
         }
 
         function normalizeCarousel(){
-            const total = books.length;
-            if(total <= 0){
+            if(cards.length === 0 || books.length <= 1){
                 bookTrack.style.transition = "none";
                 return;
             }
-            while(activeIndex < total){
-                activeIndex += total;
-                translateX -= total * cardStep;
-            }
-            while(activeIndex >= total * 2){
-                activeIndex -= total;
-                translateX += total * cardStep;
+            const nearestCard = getNearestCard();
+            if(nearestCard){
+                activeIndex = Number(nearestCard.dataset.index);
+                keepCardNearCenter(activeIndex);
             }
             bookTrack.style.transition = "none";
         }
@@ -3424,11 +3801,15 @@
             if (isFeaturedLoading()) return;
             clearInterval(autoSlide);
             autoSlide = setInterval(()=>{
-                if(Date.now() < pauseUntil){
+                if(
+                    Date.now() < pauseUntil ||
+                    dragging ||
+                    isTransitioning ||
+                    pendingTargetIndex !== null
+                ){
                     return;
                 }
-                activeIndex++;
-                updateCarousel();
+                goTo(getNavigationAnchorIndex() + 1);
             },4000);
         }
 
@@ -3442,16 +3823,21 @@
         let moved=false;
 
         function dragStart(x){
+            if(interactionLocked){
+                return;
+            }
             pauseAutoSlide(10000);
+            cancelTrackAnimation();
             dragging=true;
             moved=false;
             startX=x;
             startTranslate=translateX;
             bookTrack.style.transition="none";
+            applyActiveCard();
         }
 
         function dragMove(x){
-            if(!dragging){
+            if(interactionLocked || !dragging){
                 return;
             }
             const delta=x-startX;
@@ -3459,38 +3845,24 @@
                 moved=true;
             }
             translateX = startTranslate + delta;
-            const middle =
-                viewport.clientWidth/2;
-            activeIndex = Math.round(
-                (middle-translateX-cards[0].offsetWidth/2)/ cardStep
-            );
             normalizeCarousel();
-            bookTrack.style.transform=
-                `translate3d(${translateX}px,0,0)`;
+            syncTrackTransform();
+            applyActiveCard();
         }
 
         function dragEnd(){
-            if(!dragging){
+            if(interactionLocked || !dragging){
                 moved = false;
                 return;
             }
             dragging = false;
-            let nearest = activeIndex;
-            let best = Infinity;
-            cards.forEach((card,index)=>{
-                const center =
-                    translateX +
-                    index * cardStep +
-                    cards[0].offsetWidth / 2;
-                const dist = Math.abs(
-                    center - viewport.clientWidth / 2
-                );
-                if(dist < best){
-                    best = dist;
-                    nearest = index;
-                }
-            });
-            goTo(nearest);
+            const nearestCard = getNearestCard();
+            if(nearestCard){
+                activeIndex = Number(nearestCard.dataset.index);
+                goTo(activeIndex);
+            }else{
+                updateCarousel();
+            }
             requestAnimationFrame(()=>{
                 moved = false;
             });
@@ -3535,11 +3907,14 @@
         
         window.addEventListener("resize",()=>{
             if(cards.length){
+                cancelTrackAnimation();
                 const style = getComputedStyle(bookTrack);
                 cardStep = cards[0].offsetWidth + parseFloat(style.gap);
+                centerSlot = Math.floor(cards.length / 2);
+                settleTrack();
             }
             document.querySelectorAll(".book-title").forEach(clampTitle);
-            updateCarousel();
+            refreshHover();
         });
 
         document.addEventListener("contextmenu",e=>{
@@ -3604,21 +3979,41 @@
 
         document.addEventListener("keydown",e=>{
             if (isFeaturedLoading()) return;
+            let direction = 0;
             if(e.key==="ArrowRight"){
-                pauseAutoSlide(10000);
-                activeIndex++;
-                updateCarousel();
+                direction = 1;
             }
             if(e.key==="ArrowLeft"){
-                pauseAutoSlide(10000);
-                activeIndex--;
-                updateCarousel();
+                direction = -1;
             }
+            if(direction === 0){
+                return;
+            }
+            if(
+                heldDirection === direction &&
+                (e.repeat || keyboardLoopRunning)
+            ){
+                return;
+            }
+            heldDirection = direction;
+            keyboardHoldStart = performance.now();
+            runKeyboardNavigationLoop();
+        });
+
+        document.addEventListener("keyup",e=>{
+            if(
+                e.key !== "ArrowRight" &&
+                e.key !== "ArrowLeft"
+            ){
+                return;
+            }
+            stopKeyboardNavigation();
         });
 
         document.addEventListener("visibilitychange",()=>{
             if(document.hidden){
                 clearInterval(autoSlide);
+                stopKeyboardNavigation();
             }else{
                 startAutoSlide();
                 pauseAutoSlide(1000);
