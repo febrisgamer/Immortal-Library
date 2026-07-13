@@ -802,7 +802,6 @@
         white-space:pre-wrap;
         word-break:break-word;
         overflow:hidden;
-        transition:max-height .55s cubic-bezier(.22,.61,.36,1);
     }
 
     .book-description.collapsed{
@@ -828,7 +827,7 @@
     }
 
     .book-description.expanded{
-        max-height:9000px;
+        max-height:none;
     }
 
     .book-description.expanded::after{
@@ -1272,22 +1271,76 @@
     }
     
     function titleCase(text){
-        const keepLower = new Set([
+        const keepLower=new Set([
+            "a",
+            "an",
             "and",
-            "or",
+            "as",
+            "at",
+            "but",
+            "by",
+            "for",
+            "from",
+            "if",
+            "in",
+            "into",
+            "is",
+            "nor",
             "of",
+            "off",
+            "on",
+            "onto",
+            "or",
+            "out",
+            "over",
+            "per",
+            "so",
+            "than",
             "the",
             "to",
-            "in",
-            "on",
-            "at",
-            "for",
-            "with"
+            "under",
+            "up",
+            "upon",
+            "via",
+            "with",
+            "yet"
+        ]);
+        const keepUpper=new Set([
+            "op",
+            "mc",
+            "npc",
+            "hp",
+            "mp",
+            "ssr",
+            "sr",
+            "ur",
+            "r",
+            "s",
+            "ss",
+            "sss",
+            "vr",
+            "ar",
+            "mmorpg",
+            "rpg",
+            "pvp",
+            "pve",
+            "ai",
+            "vrmmo",
+            "usa",
+            "uk",
+            "eu",
+            "jp",
+            "kr",
+            "cn",
+            "id",
         ]);
         return text
             .toLowerCase()
-            .split(" ")
+            .split(/\s+/)
             .map((word,index)=>{
+                if(keepUpper.has(word)){
+                    return word.toUpperCase();
+                }
                 if(
                     index!==0 &&
                     keepLower.has(word)
@@ -1471,19 +1524,12 @@
             toggle.remove();
             description.classList.remove("collapsed");
             description.classList.add("expanded");
-            description.style.maxHeight = "none";
             return;
         }
-        const fullHeight = description.scrollHeight;
         toggle.onclick = ()=>{
             const expanded = toggle.classList.toggle("expanded");
-            if(expanded){
-                description.classList.remove("collapsed");
-                description.style.maxHeight = fullHeight + "px";
-            }else{
-                description.classList.add("collapsed");
-                description.style.maxHeight = "250px";
-            }
+            description.classList.toggle("collapsed", !expanded);
+            description.classList.toggle("expanded", expanded);
         };
     } 
 

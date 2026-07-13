@@ -34,22 +34,26 @@
     main{
         margin-top:72px;
         min-height:calc(100vh - 72px);
-        padding:25px 0;
+        display:flex;
         background:
-            radial-gradient(
-                ellipse at center,
-                rgba(0,0,0,0) 20%,
-                rgba(4,8,18,.18) 60%,
-                rgba(2,4,10,.45) 100%
-            ),
             linear-gradient(
                 to bottom,
-                rgba(5,10,20,.50) 0%,
-                rgba(5,10,20,.18) 30%,
-                rgba(5,10,20,.22) 70%,
-                rgba(2,5,12,.55) 100%
+                rgba(5,5,5,.92) 0%,
+                rgba(8,8,8,.72) 18%,
+                rgba(12,12,12,.55) 45%,
+                rgba(8,8,8,.72) 78%,
+                rgba(5,5,5,.94) 100%
+            ),
+            linear-gradient(
+                90deg,
+                rgba(5,5,5,.90) 0%,
+                rgba(5,5,5,.55) 20%,
+                rgba(5,5,5,.20) 50%,
+                rgba(5,5,5,.55) 80%,
+                rgba(5,5,5,.90) 100%
             ),
             url("assets/wp_2500x1407.jpg");
+
         background-size:cover;
         background-position:center;
         background-repeat:no-repeat;
@@ -426,7 +430,7 @@
 
     .browse-title{
         width:min(1180px,92%);
-        margin:0 auto 18px;
+        margin:18px auto 18px;
         font-family:Cinzel,serif;
         font-size:40px;
         line-height:1;
@@ -584,18 +588,31 @@
     .filter-panel{
         width:min(1180px,92%);
         margin:15px auto 0;
+        display:none;
         overflow:visible;
-        max-height:0;
-        opacity:0;
-        transition:
-            max-height .22s ease,
-            opacity .18s ease;
     }
 
     .filter-panel.open{
-        max-height:700px;
-        overflow:visible;
-        opacity:1;
+        display:block;
+    }
+
+    .filter-panel.open .filter-panel-inner{
+        animation:filterPanelReveal .18s ease;
+    }
+
+    #filterPanel:not(.open)+.book-grid{
+        margin-top:16px;
+    }
+
+    @keyframes filterPanelReveal{
+        from{
+            opacity:0;
+            transform:translateY(-8px);
+        }
+        to{
+            opacity:1;
+            transform:none;
+        }
     }
 
     .filter-grid{
@@ -1014,6 +1031,10 @@
         overflow:visible;
     }
 
+    .mobile-sheet-overlay{
+        display:none;
+    }
+
     .no-results{
         grid-column:1/-1;
         display:flex;
@@ -1036,7 +1057,7 @@
 
     .pagination{
         width:min(1180px,92%);
-        margin:40px auto 0;
+        margin:40px auto 28px;
         display:flex;
         justify-content:center;
         align-items:center;
@@ -1184,7 +1205,7 @@
         .browse-title{
             width:100%;
             font-size:28px;
-            margin-bottom:14px;
+            margin:12px 0 14px;
         }
         .browse-search-row{
             width:100%;
@@ -1224,6 +1245,9 @@
         }
         .filter-panel{
             width:100%;
+        }
+        #filterPanel:not(.open)+.book-grid{
+            margin-top:16px;
         }
         .filter-grid{
             grid-template-columns:repeat(4,1fr);
@@ -1313,6 +1337,7 @@
             overflow-x:clip;
         }
         .mobile-sheet-overlay{
+            display:block;
             position:fixed;
             inset:0;
             background:rgba(0,0,0,.55);
@@ -1598,6 +1623,7 @@
                             <label class="dropdown-option"><input type="checkbox" value="Europe"><span>Europe</span></label>
                             <label class="dropdown-option"><input type="checkbox" value="Africa"><span>Africa</span></label>
                             <label class="dropdown-option"><input type="checkbox" value="Oceania"><span>Oceania</span></label>
+                            <label class="dropdown-option"><input type="checkbox" value="Other"><span>Other</span></label>
                         </div>
                     </div>
                     <div class="custom-select" data-placeholder="Status" data-multiple="true">

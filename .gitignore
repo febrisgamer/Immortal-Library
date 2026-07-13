@@ -43,3 +43,9 @@ txt.txt
 temporary.html
 itempfeatured.html
 zdcserver.html
+
+# =========================
+# Ignore personal folders
+# =========================
+
+EXPERIMENTAL/

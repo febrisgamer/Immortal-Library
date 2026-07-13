@@ -9,14 +9,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/x-icon" href="assets/icon.ico">
 <link rel="shortcut icon" href="assets/icon.ico">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
 <style>
-
     *{
         margin:0;
         padding:0;
         box-sizing:border-box;
     }
-
     :root{
         --bg:#090909;
         --bg2:#111111;
@@ -36,8 +35,26 @@
     main{
         margin-top:72px;
         min-height:calc(100vh - 72px);
-        padding:70px 0;
-        background:url("assets/bg(upload1).jpg");
+        display:flex;
+        background:
+            linear-gradient(
+                to bottom,
+                rgba(5,5,5,.92) 0%,
+                rgba(8,8,8,.72) 18%,
+                rgba(12,12,12,.55) 45%,
+                rgba(8,8,8,.72) 78%,
+                rgba(5,5,5,.94) 100%
+            ),
+            linear-gradient(
+                90deg,
+                rgba(5,5,5,.90) 0%,
+                rgba(5,5,5,.55) 20%,
+                rgba(5,5,5,.20) 50%,
+                rgba(5,5,5,.55) 80%,
+                rgba(5,5,5,.90) 100%
+            ),
+            url("assets/wp_2500x1407.jpg");
+
         background-size:cover;
         background-position:center;
         background-repeat:no-repeat;
@@ -45,6 +62,175 @@
 
     body{
         visibility:hidden;
+        font-family:Inter,sans-serif;
+    }
+
+    .sidebar{
+        width:260px;
+        flex-shrink:0;
+        display:flex;
+        flex-direction:column;
+        background:rgba(10,10,10,.70);
+        backdrop-filter:blur(18px);
+        border-right:1px solid rgba(255,255,255,.08);
+        padding:28px 0;
+        user-select:none;
+    }
+
+    .sidebar-title{
+        font-family:Cinzel,serif;
+        color:var(--gold);
+        font-size:20px;
+        text-align:center;
+        letter-spacing:.08em;
+        padding:10px 0;
+        margin:0;
+    }
+
+    .sidebar-mobile-top{
+        display:none;
+        align-items:center;
+        justify-content:space-between;
+        padding:0 22px 16px;
+    }
+
+    .sidebar-home{
+        font-family:Inter,sans-serif;
+        font-size:15px;
+        font-weight:600;
+        text-transform:uppercase;
+        letter-spacing:.08em;
+        color:#bcbcbc;
+        cursor:pointer;
+        transition:
+            color .22s,
+            letter-spacing .22s,
+            text-shadow .22s;
+    }
+
+    .sidebar-home:hover{
+        color:var(--gold);
+        letter-spacing:.12em;
+        text-shadow:
+            0 0 8px rgba(215,181,109,.16);
+    }
+
+    .sidebar-close{
+        background:none;
+        border:none;
+        color:rgba(215,181,109,.72);
+        font-size:30px;
+        font-weight:900;
+        line-height:1;
+        cursor:pointer;
+        transition:
+            color .2s,
+            transform .2s,
+            text-shadow .2s;
+    }
+
+    .sidebar-close:hover{
+        color:var(--gold2);
+        text-shadow:
+            0 0 12px rgba(215,181,109,.35);
+        transform:scale(1.08);
+    }
+
+    .sidebar-mobile-divider{
+        display:none;
+        width:88%;
+        height:1px;
+        margin:0 auto 24px;
+        background:
+            linear-gradient(
+                90deg,
+                transparent,
+                rgba(215,181,109,.38),
+                transparent
+            );
+    }
+
+    .sidebar-item{
+        position:relative;
+        text-align:center;
+        font-family:Inter,sans-serif;
+        font-size:15px;
+        font-weight:600;
+        letter-spacing:.08em;
+        text-transform:uppercase;
+        color:#969696;
+        padding:18px 0;
+        cursor:pointer;
+        transition:
+            color .22s,
+            letter-spacing .22s,
+            text-shadow .22s;
+    }
+
+    .sidebar-item:hover{
+        color:#d8d8d8;
+        letter-spacing:.12em;
+    }
+
+    .sidebar-item.active{
+        background:transparent;
+        border:none;
+        color:var(--gold);
+        letter-spacing:.16em;
+        text-shadow:
+            0 0 8px rgba(215,181,109,.18);
+    }
+
+    .sidebar-item::after{
+        content:"";
+        position:absolute;
+        left:20%;
+        bottom:0;
+        width:60%;
+        height:1px;
+        background:
+            linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,.08),
+                transparent
+            );
+    }
+
+    #mobileHome::after{
+        left:10%;
+        width:80%;
+        background:
+            linear-gradient(
+                90deg,
+                transparent,
+                rgba(215,181,109,.35),
+                transparent
+            );
+    }
+
+    .sidebar-title::after{
+        content:"";
+        display:block;
+        width:120px;
+        height:1px;
+        margin:14px auto 0;
+        background:
+            linear-gradient(
+                90deg,
+                transparent,
+                rgba(215,181,109,.35),
+                transparent
+            );
+    }
+
+    .main-panel{
+        flex:1;
+        padding:40px;
+        overflow:auto;
+    }
+
+    body{
         background:#090909;
         color:var(--text);
         font-family:Inter,sans-serif;
@@ -99,13 +285,14 @@
         display:flex;
         align-items:center;
         gap:16px;
+        position:relative;
     }
 
     .nav-btn{
         text-decoration:none;
-        color:#d7d7d7;
         padding:11px 22px;
         border-radius:30px;
+        color:#d7d7d7;
         transition:.25s;
         font-weight:500;
     }
@@ -115,14 +302,14 @@
     }
 
     .active{
-        background:var(--gold);
-        color:black;
+        background:#e3c16e;
+        color:#000;
     }
 
     footer{
         padding:70px;
         text-align:center;
-        border-top:1px solid rgba(255,255,255,.08);
+        border-top:2px solid rgba(255,255,255, .30);
         color:#888;
     }
 
@@ -160,68 +347,6 @@
         margin-bottom:25px;
     }
 
-    #googleLogin{
-        width:100%;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        gap:12px;
-        padding:14px;
-        background:white;
-        color:black;
-        border:none;
-        border-radius:12px;
-        font-weight:600;
-        font-size:15px;
-        cursor:pointer;
-        transition:
-            background .2s,
-            transform .15s,
-            box-shadow .2s;
-    }
-
-    #googleLogin:hover{
-        background:#f2f2f2;
-        transform:translateY(-2px);
-        box-shadow:0 8px 24px rgba(255,255,255,.12);
-    }
-
-    #googleLogin:active{
-        transform:scale(.97);
-        background:#e8e8e8;
-    }
-
-    #googleLogin img{
-        width:24px;
-    }
-
-    #closeModal{
-        margin-top:15px;
-        width:100%;
-        padding:12px;
-        background:#222;
-        color:white;
-        border:none;
-        border-radius:12px;
-        font-weight:500;
-        cursor:pointer;
-        transition:
-            background .2s,
-            transform .15s,
-            box-shadow .2s;
-    }
-
-    #closeModal:hover{
-        background:#2f2f2f;
-        transform:translateY(-2px);
-        box-shadow:0 8px 24px rgba(0,0,0,.35);
-    }
-
-    #closeModal:active{
-        transform:scale(.97);
-        background:#1a1a1a;
-    }
-
     .admin-avatar{
         width:100%;
         height:100%;
@@ -234,7 +359,6 @@
         width:46px;
         height:46px;
         padding:0;
-        border:none;
         background:transparent;
         border-radius:50%;
         overflow:hidden;
@@ -242,12 +366,11 @@
         justify-content:center;
         align-items:center;
         cursor:pointer;
-        transition:.2s;
-    }
-
-    .profile-btn:hover{
-        transform:translateY(-2px);
-        box-shadow:0 0 24px rgba(215,181,109,.18);
+        transition:
+            transform .18s,
+            box-shadow .18s,
+            border-color .18s;
+        border:2px solid transparent;
     }
 
     .profile-btn:active{
@@ -282,8 +405,31 @@
         display:none;
     }
 
-    .nav-right{
-        position:relative;
+    #closeErrorModal{
+        margin-top:15px;
+        width:100%;
+        padding:12px;
+        background:#222;
+        color:white;
+        border:none;
+        border-radius:12px;
+        font-weight:500;
+        cursor:pointer;
+        transition:
+            background .2s,
+            transform .15s,
+            box-shadow .2s;
+    }
+
+    #closeErrorModal:hover{
+        background:#2f2f2f;
+        transform:translateY(-2px);
+        box-shadow:0 8px 24px rgba(0,0,0,.35);
+    }
+
+    #closeErrorModal:active{
+        transform:scale(.97);
+        background:#1a1a1a;
     }
 
     .profile-menu{
@@ -340,11 +486,17 @@
         object-fit:cover;
     }
 
+    .profile-menu-info{
+        flex:1;
+        min-width:0;
+        padding-right:18px;
+    }
+
     .profile-menu-name{
         font-weight:600;
         color:white;
-        overflow:hidden;
         white-space:nowrap;
+        overflow:hidden;
         text-overflow:ellipsis;
     }
 
@@ -389,22 +541,11 @@
         transform:scale(.985);
     }
 
-    .profile-btn{
-        transition:
-            transform .18s,
-            box-shadow .18s,
-            border-color .18s;
-        border:2px solid transparent;
-    }
-
     .profile-btn:hover{
+        transform:translateY(-2px);
         border-color:rgba(215,181,109,.55);
         box-shadow:
             0 0 22px rgba(215,181,109,.22);
-    }
-
-    .profile-btn:active{
-        transform:scale(.94);
     }
 
     .footer-link{
@@ -448,594 +589,1081 @@
         font-size:16px;
     }
 
-    .upload-card{
-        width:min(1080px,92%);
-        margin:80px auto;
-        padding:48px;
-        border-radius:28px;
-        background:
-            linear-gradient(
-                180deg,
-                rgba(35,55,90,.12),
-                rgba(10,18,36,.06)
-            );
-        backdrop-filter:blur(4px);
-        -webkit-backdrop-filter:blur(4px);
-        border:3px solid rgba(0, 0, 0, 0.60);
-        box-shadow:
-            0 40px 100px rgba(0,0,0,.45),
-            inset 0 1px rgba(255,255,255,.08),
-            0 0 60px rgba(80,140,255,.08);
-    }
-
-    .upload-card h1{
+    .content-title{
         font-family:Cinzel,serif;
-        font-size:42px;
-        font-weight:600;
+        font-size:36px;
         color:var(--gold);
-        text-align:center;
-        margin-bottom:55px;
-        letter-spacing:.6px;
+        margin-bottom:30px;
+        letter-spacing:.08em;
     }
 
-    .upload-grid{
+    .upload-layout{
         display:grid;
-        grid-template-columns:417px 1fr;
-        gap:40px;
-        align-items:start;
+        grid-template-columns:302px minmax(0,1fr);
+        gap:32px;
     }
 
-    .cover-column{
-        display:flex;
-        justify-content:center;
-        align-items:flex-start;
-    }
-
-    .cover-preview{
-        width:100%;
+    .cover-upload{
+        width:302px;
         aspect-ratio:3/4;
-        border-radius:22px;
+        flex-shrink:0;
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:24px;
         background:
-            linear-gradient(
-                180deg,
-                rgba(22,22,22,.78),
-                rgba(15,15,15,.82)
-            );
-        border:2px dashed rgba(215,181,109,.75);
+            linear-gradient(rgba(255,255,255,.02),rgba(255,255,255,.01)),
+            rgba(18,18,18,.82);
+        backdrop-filter:blur(20px);
+        cursor:pointer;
         display:flex;
-        flex-direction:column;
         justify-content:center;
         align-items:center;
+        position:relative;
         overflow:hidden;
-        background-size:cover;
-        background-position:center;
-        background-repeat:no-repeat;
-        color:#888;
-        cursor:pointer;
-        transition:
-            transform .22s,
-            border-color .22s,
-            box-shadow .22s,
-            background .22s;
-        user-select:none;
+        transition:.25s;
     }
 
-    .cover-preview:hover{
-        transform:translateY(-4px);
-        border-color:rgba(215,181,109,.85);
-        background:
-            linear-gradient(
-                180deg,
-                rgba(255,255,255,.05),
-                rgba(255,255,255,.02)
-            );
+    .cover-upload:hover{
+        border-color:rgba(215,181,109,.45);
         box-shadow:
-            0 18px 45px rgba(0,0,0,.35),
-            0 0 28px rgba(215,181,109,.14);
+            0 0 30px rgba(215,181,109,.08);
     }
 
-    .cover-preview::before{
-        content:"📖";
-        font-size:58px;
+    .cover-upload input{
+        display:none;
+    }
+
+    .cover-placeholder{
+        text-align:center;
+        color:#d2d2d2;
+        pointer-events:none;
+    }
+
+    .cover-placeholder svg{
+        width:58px;
+        height:58px;
         margin-bottom:18px;
+        opacity:.75;
     }
 
-    .cover-preview::after{
-        content:"Choose Cover (max. 1MB)";
+    .cover-placeholder h3{
+        font-size:18px;
+        font-weight:600;
+        color:#ececec;
+    }
+
+    .cover-placeholder p{
+        margin-top:8px;
+        color:#999;
+        font-size:14px;
+    }
+
+    .upload-right{
+        flex:1;
+        min-width:0;
+        width:100%;
+        display:flex;
+        flex-direction:column;
+        gap:18px;
+    }
+
+    .upload-row{
+        display:flex;
+        gap:18px;
+    }
+
+    .field{
+        flex:1;
+        display:flex;
+        flex-direction:column;
+        gap:8px;
+    }
+
+    .field label{
+        color:#cfcfcf;
+        font-size:13px;
+        letter-spacing:.08em;
+        text-transform:uppercase;
+        padding-left:20px;
+    }
+
+    .field input{
+        height:56px;
+        border:none;
+        outline:none;
+        border-radius:18px;
+        padding:0 18px;
+        background:rgba(26,26,26,.92);
+        border:1px solid rgba(255,255,255,.08);
+        color:#ececec;
         font-size:15px;
-        color:#aaa;
+        transition:.22s;
     }
 
-    .cover-preview.has-cover::before,
-    .cover-preview.has-cover::after{
-        display:none;
+    #chapterNumber{
+        appearance:textfield;
+        -moz-appearance:textfield;
     }
 
-    #coverFile{
-        user-select: none;
-        display:none;
+    #chapterNumber::-webkit-outer-spin-button,
+    #chapterNumber::-webkit-inner-spin-button{
+        -webkit-appearance:none;
+        margin:0;
     }
 
-    .details-column{
+    .field select{
+        height:56px;
+        border:none;
+        outline:none;
+        border-radius:18px;
+        padding:0 18px;
+        background:rgba(26,26,26,.92);
+        border:1px solid rgba(255,255,255,.08);
+        color:#ececec;
+        font-size:15px;
+        transition:.22s;
+    }
+
+    .field input::placeholder{
+        color:#8f8f8f;
+    }
+
+    .field input:focus{
+        border-color:rgba(215,181,109,.55);
+        box-shadow:
+            0 0 0 1px rgba(215,181,109,.15),
+            0 0 18px rgba(215,181,109,.10);
+    }
+
+    .field select:focus{
+        border-color:rgba(215,181,109,.55);
+        box-shadow:
+            0 0 0 1px rgba(215,181,109,.15),
+            0 0 18px rgba(215,181,109,.10);
+    }
+
+    .metadata-section{
+        margin-top:34px;
         display:flex;
         flex-direction:column;
         gap:22px;
     }
 
-    .details-column input,
-    .details-column select,
-    #tags,
-    #description{
+    .metadata-section .field{
         width:100%;
-        background:
-            linear-gradient(
-                180deg,
-                rgba(10,16,28,.92),
-                rgba(6,10,18,.95)
-            );
-        color:white;
-        border:2px solid rgba(255,255,255,1);
-        border-radius:16px;
-        padding:18px 20px;
-        font-size:15px;
+    }
+
+    .metadata-section textarea{
+        width:100%;
+        border:none;
         outline:none;
-        transition:
-            border-color .2s,
-            box-shadow .2s,
-            transform .18s;
+        border-radius:20px;
+        padding:18px 20px;
+        background:rgba(26,26,26,.92);
+        border:1px solid rgba(255,255,255,.08);
+        color:#ececec;
+        font:inherit;
+        line-height:1.75;
+        transition:.22s;
     }
 
-    .details-column input:focus,
-    #tags:focus,
-    #description:focus,
-    .custom-dropdown.open .dropdown-selected,
-    .custom-dropdown:focus .dropdown-selected{
-        border-color:#282626;
-        box-shadow:
-            0 0 0 4px rgba(255,255,255,.08);
-    }
-
-    .details-column input::placeholder,
-    #tags::placeholder,
-    #description::placeholder{
-        color:#8a8a8a;
-    }
-
-    #tags{
-        margin-top:24px;
+    .auto-grow{
+        min-height:60px;
+        overflow:hidden;
+        resize:none;
     }
 
     #description{
-        margin-top:24px;
-        min-height:180px;
-        max-height:420px;
-        line-height:1.75;
-        resize:none;
+        min-height:220px;
+        max-height:220px;
         overflow-y:auto;
         overflow-x:hidden;
-        padding-right:14px;
+        resize:none;
     }
 
-    .upload-btn{
-        margin-top:34px;
-        width:100%;
-        height:60px;
-        border:none;
-        border-radius:18px;
-        background:
-            linear-gradient(
-                180deg,
-                var(--gold2),
-                var(--gold)
-            );
-        color:black;
-        font-size:16px;
-        font-weight:700;
-        letter-spacing:.4px;
-        cursor:pointer;
-        transition:
-            transform .2s,
-            box-shadow .2s;
-    }
-
-    .upload-btn:hover{
-        transform:translateY(-3px);
-        box-shadow:
-            0 18px 45px rgba(215,181,109,.25);
-    }
-
-    .upload-btn:active{
-        transform:scale(.985);
-    }
-
-    .upload-btn{
-        position:relative;
+    .description-counter{
         display:flex;
+        justify-content:flex-end;
         align-items:center;
-        justify-content:center;
-        gap:12px;
+        margin-top:8px;
+        padding-right:8px;
+        color:#8f8f8f;
+        font-size:13px;
+        font-weight:500;
+        user-select:none;
+        transition:color .18s;
     }
 
-    .upload-btn:disabled{
-        cursor:not-allowed;
-        opacity:.9;
+    .description-counter.warning{
+        color:#e2c67e;
     }
 
-    .upload-loader{
-        width:22px;
-        height:22px;
-        border:3px solid
-            rgba(0,0,0,.18);
-        border-top-color:black;
-        border-radius:50%;
-        animation:
-            uploadSpin .8s linear infinite;
+    .description-counter.danger{
+        color:#ff7b7b;
     }
 
-    @keyframes uploadSpin{
-        to{
-            transform:
-                rotate(360deg);
+    @keyframes counterFlash{
+        0%{
+            color:#ff7b7b;
+            text-shadow:none;
         }
-
+        35%{
+            color:#ff3b3b;
+            text-shadow:
+                0 0 6px rgba(255,59,59,.45),
+                0 0 12px rgba(255,59,59,.25);
+        }
+        100%{
+            color:#ff7b7b;
+            text-shadow:none;
+        }
     }
 
-    input[type=file]{
-        display:none;
-    }
-
-    .details-column input,
-    .epub-picker,
-    .tags-container,
-    #description,
-    #tags,
-    .dropdown-selected{
-        border:2px solid rgba(32, 32, 32, 0.92) !important;
-        box-shadow:
-            inset 0 1px rgba(255,255,255,.08);
+    .description-counter.flash{
+        animation:counterFlash .22s ease;
     }
 
     #description::-webkit-scrollbar{
-        width:8px;
+        width:10px;
+    }
+
+    #description::-webkit-scrollbar-button,
+    #description::-webkit-scrollbar-button:start,
+    #description::-webkit-scrollbar-button:end,
+    #description::-webkit-scrollbar-button:single-button{
+        display:none;
+        width:0;
+        height:0;
     }
 
     #description::-webkit-scrollbar-track{
         background:transparent;
-        margin:12px 0;
+        margin:10px 0;
     }
 
     #description::-webkit-scrollbar-thumb{
-        background:rgba(215,181,109,.55);
         border-radius:999px;
-        border:2px solid transparent;
+        border:3px solid transparent;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(240,210,138,.85),
+                rgba(199,157,75,.85)
+            );
         background-clip:padding-box;
     }
 
     #description::-webkit-scrollbar-thumb:hover{
-        background:rgba(240,210,138,.9);
+        background:
+            linear-gradient(
+                180deg,
+                rgba(255,225,150,.95),
+                rgba(215,181,109,.95)
+            );
         background-clip:padding-box;
     }
 
-    #description{
-        scrollbar-width:thin;
-        scrollbar-color:rgba(215,181,109,.55) transparent;
+    #description::-webkit-scrollbar-corner{
+        background:transparent;
+    }
+
+    .metadata-section textarea::placeholder{
+        color:#8f8f8f;
+    }
+
+    .metadata-section textarea:focus{
+        border-color:rgba(215,181,109,.55);
+        box-shadow:
+            0 0 0 1px rgba(215,181,109,.15),
+            0 0 18px rgba(215,181,109,.10);
+    }
+
+    .upload-btn{
+        height:60px;
+        margin-top:12px;
+        border:none;
+        border-radius:18px;
+        cursor:pointer;
+        font-size:16px;
+        font-weight:700;
+        letter-spacing:.08em;
+        text-transform:uppercase;
+        background:
+            linear-gradient(180deg,#e2c67e,#c69b48);
+        color:#111;
+        transition:.22s;
+    }
+
+    .upload-btn:hover{
+        transform:translateY(-2px);
+        box-shadow:
+            0 12px 35px rgba(215,181,109,.20);
+    }
+
+    .upload-btn:active{
+        transform:scale(.98);
     }
 
     .epub-picker{
         display:flex;
         align-items:center;
         gap:18px;
-        padding:18px;
-        border-radius:16px;
+        width:100%;
+        max-width:100%;
+        min-width:0;
+        overflow:hidden;
+        margin-top:20px;
+        height:90px;
+        padding:0 22px;
+        border-radius:18px;
         cursor:pointer;
         transition:.22s;
         background:
             linear-gradient(
                 180deg,
-                rgba(10,16,28,.92),
-                rgba(6,10,18,.95)
+                rgba(24,24,24,.96),
+                rgba(17,17,17,.96)
             );
+        border:1px solid rgba(255,255,255,.08);
+        box-shadow:inset 0 1px rgba(255,255,255,.03);
     }
 
     .epub-picker:hover{
-        border-color:rgba(215,181,109,.45);
+        border-color:rgba(215,181,109,.40);
         transform:translateY(-2px);
+        box-shadow:
+            0 10px 26px rgba(215,181,109,.08),
+            inset 0 1px rgba(255,255,255,.04);
     }
 
     .epub-icon{
         font-size:34px;
+        flex-shrink:0;
+    }
+
+    .epub-info{
+        flex:1 1 0;
+        min-width:0;
+        overflow:hidden;
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
     }
 
     .epub-title{
-        color:white;
+        color:#ededed;
+        font-size:15px;
         font-weight:600;
+        letter-spacing:.03em;
     }
 
     .epub-name{
-        color:#888;
-        margin-top:4px;
-        font-size:14px;
+        display:block;
+        width:0;
+        min-width:100%;
+        margin-top:5px;
+        color:#8f8f8f;
+        font-size:13px;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
     }
 
-    .tags-container{
-        margin-top:24px;
-        display:flex;
-        flex-wrap:wrap;
-        gap:10px;
-        padding:14px;
-        border-radius:16px;
-        min-height:62px;
-        background:
-            linear-gradient(
-                180deg,
-                rgba(10,16,28,.92),
-                rgba(6,10,18,.95)
-            );
-    }
-
-    .tags-container input{
-        flex:1;
-        min-width:180px;
-        border:none;
-        background:none;
-        outline:none;
-        color:white;
-        font-size:15px;
-    }
-
-    .tag-chip{
-        display:flex;
-        align-items:center;
-        gap:8px;
-        padding:8px 14px;
-        border-radius:999px;
-        background:rgba(215,181,109,.14);
-        color:var(--gold);
-    }
-
-    .tag-remove{
-        cursor:pointer;
-        color:#ff8a8a;
-        font-weight:bold;
-    }
-
-    .genre-main{
-        background:linear-gradient(
-            180deg,
-            var(--gold2),
-            var(--gold)
-        );
-        color:#000;
-        font-weight:700;
-    }
-
-    .genre-main .tag-remove{
-        color:#8b0000;
-    }
-
-    .genre-chip{
-        background:rgba(90,150,255,.12);
-        color:#89b8ff;
-    }
-
-    .custom-dropdown{
+    .custom-select{
         position:relative;
         width:100%;
-        user-select:none;
-        outline:none;
     }
 
-    .dropdown-selected{
+    .select-btn{
         width:100%;
-        min-height:58px;
+        height:56px;
+        background:#181818;
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:18px;
+        padding:0 18px;
         display:flex;
-        align-items:center;
         justify-content:space-between;
-        padding:18px 20px;
-        background:
-            linear-gradient(
-                180deg,
-                rgba(10,16,28,.92),
-                rgba(6,10,18,.95)
-            );
-        color:white;
-        border:2px solid #fff;
-        border-radius:16px;
+        align-items:center;
+        color:#fff;
         cursor:pointer;
-        transition:
-            border-color .22s,
-            box-shadow .22s,
-            transform .18s;
+        transition:.25s;
     }
 
-    .dropdown-selected span{
-        color:#8a8a8a;
+    .select-btn:hover{
+        border-color:rgba(215,181,109,.35);
+    }
+
+    .select-btn.open{
+        border-color:rgba(255,255,255,.12);
+        box-shadow:
+            inset 0 0 0 1px rgba(255,255,255,.03),
+            0 0 0 3px rgba(255,255,255,.025);
+    }
+
+    .select-text{
         overflow:hidden;
         white-space:nowrap;
         text-overflow:ellipsis;
     }
 
-    .custom-dropdown.selected .dropdown-selected span{
-        color:white;
-    }
-
     .dropdown-arrow{
-        width:18px;
-        height:18px;
+        width:20px;
+        height:20px;
         color:var(--gold);
-        flex-shrink:0;
-        transition:
-            transform .25s;
+        transition:.25s;
     }
 
-    .custom-dropdown.open .dropdown-arrow{
+    .select-btn.open .dropdown-arrow{
         transform:rotate(180deg);
     }
 
     .dropdown-menu{
         position:absolute;
-        top:calc(100% + 10px);
+        top:calc(100% + 8px);
         left:0;
-        width:100%;
+        display:grid;
+        grid-auto-rows:minmax(30px,auto);
+        min-width:200px;
+        width:max-content;
+        max-width:600px;
+        max-height:320px;
+        overflow-y:auto;
+        overflow-x:hidden;
+        padding:8px;
+        background:#111111;
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:14px;
+        box-shadow:
+            0 18px 50px rgba(0,0,0,.55),
+            inset 0 1px rgba(255,255,255,.03);
         opacity:0;
         visibility:hidden;
-        transform:
-            translateY(-8px);
-        background:
-            rgba(24,24,24,.92);
-        backdrop-filter:blur(22px);
-        border:2px solid rgba(255,255,255,.08);
-        border-radius:18px;
-        overflow:hidden;
-        box-shadow:
-            0 20px 55px rgba(0,0,0,.45);
+        pointer-events:none;
+        transform:translateY(-8px) scale(.98);
         transition:
-            opacity .22s,
-            transform .22s,
-            visibility .22s;
-        z-index:100;
+            opacity .18s,
+            transform .18s,
+            visibility .18s;
+        z-index:9999999999999;
+        scrollbar-width:thin;
+        scrollbar-color:rgba(255,255,255,.18) transparent;
     }
 
-    .custom-dropdown.open .dropdown-menu{
-        opacity:1;
-        visibility:visible;
-        transform:none;
+    .dropdown-menu::-webkit-scrollbar{
+        width:7px;
     }
 
-    .dropdown-options{
-        max-height:260px;
-        overflow-y:auto;
-    }
-
-    .dropdown-option{
-        padding:14px 18px;
-        color:#dddddd;
-        cursor:pointer;
-        transition:
-            background .18s,
-            color .18s,
-            padding-left .18s;
-    }
-
-    .dropdown-option:hover{
-        background:
-            rgba(215,181,109,.10);
-        color:white;
-        padding-left:24px;
-    }
-
-    .dropdown-option.active{
-        background:
-            rgba(215,181,109,.16);
-        color:var(--gold);
-    }
-
-    .dropdown-options::-webkit-scrollbar{
-        width:8px;
-    }
-
-    .dropdown-options::-webkit-scrollbar-track{
+    .dropdown-menu::-webkit-scrollbar-track{
         background:transparent;
     }
 
-    .dropdown-options::-webkit-scrollbar-thumb{
-        background:
-            rgba(215,181,109,.55);
+    .dropdown-menu::-webkit-scrollbar-thumb{
+        background:rgba(255,255,255,.14);
         border-radius:999px;
+        border:2px solid transparent;
+        background-clip:padding-box;
+        transition:background .2s;
     }
 
-    .dropdown-options::-webkit-scrollbar-thumb:hover{
-        background:
-            rgba(240,210,138,.9);
+    .dropdown-menu::-webkit-scrollbar-thumb:hover{
+        background:rgba(255,255,255,.28);
+        background-clip:padding-box;
     }
 
-    .dropdown-options{
-        scrollbar-width:thin;
-        scrollbar-color:
-            rgba(215,181,109,.55)
-            transparent;
+    .dropdown-menu::-webkit-scrollbar-corner{
+        background:transparent;
     }
 
-    #closeErrorModal{
-        margin-top:15px;
-        width:100%;
-        padding:12px;
-        background:#222;
-        color:white;
+    .dropdown-menu.open{
+        opacity:1;
+        visibility:visible;
+        pointer-events:auto;
+        transform:none;
+    }
+
+    .dropdown-option{
+        display:flex;
+        align-items:center;
+        height:40px;
+        padding:0 14px;
+        border-radius:10px;
+        cursor:pointer;
+        color:#d8d8d8;
+        font-size:14px;
+        transition:.18s;
+    }
+
+    .dropdown-option:hover{
+        background:rgba(215,181,109,.10);
+        color:var(--gold2);
+    }
+
+    .crop-modal{
+        position:fixed;
+        inset:0;
+        z-index:999999;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        background:rgba(0,0,0,.82);
+        backdrop-filter:blur(12px);
+    }
+
+    .crop-modal.hidden{
+        display:none !important;
+    }
+
+    .crop-card{
+        width:min(96vw,900px);
+        height:min(94vh,900px);
+        display:flex;
+        flex-direction:column;
+        background:#131313;
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:24px;
+        overflow:hidden;
+        box-shadow:0 25px 80px rgba(0,0,0,.65);
+    }
+
+    .crop-header{
+        flex-shrink:0;
+        padding:20px 28px;
+        font-size:20px;
+        font-family:Cinzel,serif;
+        color:var(--gold);
+        border-bottom:1px solid rgba(255,255,255,.08);
+    }
+
+    .crop-body{
+        flex:1;
+        position:relative;
+        overflow:hidden;
+        background:#090909;
+    }
+
+    .crop-body img{
+        display:block;
+        max-width:100%;
+    }
+
+    .crop-actions{
+        flex-shrink:0;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        gap:16px;
+        padding:18px 22px;
+        border-top:1px solid rgba(255,255,255,.08);
+        background:#111;
+    }
+
+    .crop-actions button{
+        width:160px;
+        height:48px;
         border:none;
-        border-radius:12px;
-        font-weight:500;
+        border-radius:14px;
+        cursor:pointer;
+        font-weight:600;
+        transition:.2s;
+    }
+
+    .crop-cancel{
+        background:#242424;
+        color:#eee;
+    }
+
+    .crop-cancel:hover{
+        background:#313131;
+    }
+
+    .crop-confirm{
+        background:linear-gradient(180deg,#e2c67e,#c69b48);
+        color:#111;
+    }
+
+    .crop-confirm:hover{
+        transform:translateY(-2px);
+    }
+
+    .author-field{
+        position:relative;
+    }
+
+    .author-dropdown{
+        position:absolute;
+        top:100%;
+        left:0;
+        right:0;
+        background:#111111;
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:0 0 18px 18px;
+        box-shadow:
+            0 18px 50px rgba(0,0,0,.55),
+            inset 0 1px rgba(255,255,255,.03);
+        max-height:280px;
+        overflow-y:auto;
+        overflow-x:hidden;
+        opacity:0;
+        visibility:hidden;
+        pointer-events:none;
+        transition:
+            opacity .18s,
+            visibility .18s;
+        z-index:9999;
+        scrollbar-width:thin;
+        scrollbar-color:rgba(255,255,255,.18) transparent;
+    }
+
+    .author-dropdown::-webkit-scrollbar{
+        width:7px;
+    }
+
+    .author-dropdown::-webkit-scrollbar-track{
+        background:transparent;
+    }
+
+    .author-dropdown::-webkit-scrollbar-thumb{
+        background:rgba(255,255,255,.14);
+        border-radius:999px;
+        border:2px solid transparent;
+        background-clip:padding-box;
+    }
+
+    .author-dropdown::-webkit-scrollbar-thumb:hover{
+        background:rgba(255,255,255,.28);
+        background-clip:padding-box;
+    }
+
+    .author-dropdown::-webkit-scrollbar-corner{
+        background:transparent;
+    }
+
+    .author-dropdown.open{
+        opacity:1;
+        visibility:visible;
+        pointer-events:auto;
+    }
+
+    .author-option{
+        display:flex;
+        align-items:center;
+        min-height:40px;
+        padding:0 14px;
+        color:#d8d8d8;
+        font-size:14px;
+        cursor:pointer;
+        transition:.18s;
+    }
+
+    .author-option:hover{
+        background:rgba(215,181,109,.10);
+        color:var(--gold2);
+    }
+
+    .author-field.open input,
+    .author-field.open .chip-input{
+        border-bottom-left-radius:0;
+        border-bottom-right-radius:0;
+    }
+
+    .chip-input{
+        display:flex;
+        flex-wrap:wrap;
+        align-items:center;
+        gap:10px;
+        min-height:56px;
+        padding:10px 14px;
+        background:rgba(26,26,26,.92);
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:18px;
+        transition:.22s;
+    }
+
+    .chip-input:focus-within{
+        border-color:rgba(215,181,109,.55);
+        box-shadow:
+            0 0 0 1px rgba(215,181,109,.15),
+            0 0 18px rgba(215,181,109,.10);
+    }
+
+    #alternateInput{
+        flex:1;
+        min-width:180px;
+        height:34px !important;
+        padding:0;
+        border:none !important;
+        background:transparent !important;
+        box-shadow:none !important;
+        outline:none;
+        color:#ececec;
+        padding-left:5px;
+    }
+
+    #alternateInput::placeholder{
+        color:#8f8f8f;
+    }
+
+    .alt-chip{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        max-width:100%;
+        padding:10px 15px;
+        color:#eef3ff;
+        font-size:14px;
+        line-height:1.45;
+        border-radius:14px;
+        border:1px solid rgba(170,195,255,.16);
+        background:
+            linear-gradient(
+                135deg,
+                rgba(70,135,255,.32) 0%,
+                rgba(76,76,255,.20) 45%,
+                rgba(96,42,180,.34) 100%
+            );
+        backdrop-filter:blur(16px);
+        -webkit-backdrop-filter:blur(16px);
+        box-shadow:
+            inset 0 1px rgba(255,255,255,.16),
+            0 8px 22px rgba(30,60,180,.18);
+        overflow-wrap:anywhere;
+        transition:.18s;
+    }
+
+    .alt-chip:hover{
+        border-color:rgba(195,215,255,.30);
+        box-shadow:
+            inset 0 1px rgba(255,255,255,.22),
+            0 10px 28px rgba(60,90,255,.25);
+    }
+
+    .alt-chip span{
+        flex:1;
+    }
+
+    .alt-chip button{
+        flex-shrink:0;
+        padding:0;
+        border:none;
+        background:none;
+        color:rgba(255,255,255,.75);
+        font-size:17px;
+        font-weight:600;
+        line-height:1;
         cursor:pointer;
         transition:
-            background .2s,
-            transform .15s,
-            box-shadow .2s;
+            color .18s,
+            transform .18s;
     }
 
-    #closeErrorModal:hover{
-        background:#2f2f2f;
+    .alt-chip button:hover{
+        color:#ffffff;
+        transform:scale(1.12);
+    }
+
+    .alt-chip button:active{
+        transform:scale(.92);
+    }
+
+    .genre-chip{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        max-width:100%;
+        padding:10px 15px;
+        border-radius:14px;
+        color:white;
+        overflow-wrap:anywhere;
+        backdrop-filter:blur(16px);
+        -webkit-backdrop-filter:blur(16px);
+        transition:.18s;
+    }
+
+    .genre-chip.main{
+        background:
+            linear-gradient(
+                135deg,
+                rgba(48,22,90,.92),
+                rgba(22,10,48,.95)
+            );
+        border:1px solid rgba(170,195,255,.16);
+        box-shadow:
+            inset 0 1px rgba(255,255,255,.16),
+            0 8px 22px rgba(30,60,180,.18);
+    }
+
+    .genre-chip.main:hover{
+        border-color:rgba(195,215,255,.30);
+        box-shadow:
+            inset 0 1px rgba(255,255,255,.22),
+            0 10px 28px rgba(60,90,255,.25);
+    }
+
+    .genre-chip.secondary{
+        background:
+            linear-gradient(
+                135deg,
+                rgba(245,214,120,.34),
+                rgba(183,132,36,.34)
+            );
+        border:1px solid rgba(235,205,120,.22);
+        box-shadow:
+            inset 0 1px rgba(255,255,255,.16),
+            0 8px 22px rgba(215,181,109,.20);
+    }
+
+    .genre-chip.secondary:hover{
+        border-color:rgba(245,220,150,.38);
+        box-shadow:
+            inset 0 1px rgba(255,255,255,.22),
+            0 10px 28px rgba(215,181,109,.30);
+    }
+
+    .genre-chip span{
+        flex:1;
+    }
+
+    .genre-chip button{
+        border:none;
+        background:none;
+        color:rgba(255,255,255,.75);
+        font-size:17px;
+        cursor:pointer;
+    }
+
+    .genre-option{
+        display:flex;
+        align-items:center;
+        min-height:40px;
+        padding:0 14px;
+        cursor:pointer;
+        transition:.18s;
+    }
+
+    .genre-option:hover{
+        background:rgba(215,181,109,.10);
+    }
+
+    #genreInput{
+        flex:1;
+        min-width:180px;
+        height:34px !important;
+        padding:0;
+        border:none !important;
+        background:transparent !important;
+        box-shadow:none !important;
+        outline:none;
+        color:#ececec;
+        padding-left:5px;
+    }
+
+    #genreInput::placeholder{
+        color:#8f8f8f;
+    }
+
+    .tag-chip{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        max-width:100%;
+        padding:10px 15px;
+        color:#effff4;
+        font-size:14px;
+        line-height:1.45;
+        border-radius:14px;
+        border:1px solid rgba(170,255,185,.18);
+        background:
+            linear-gradient(
+                135deg,
+                rgba(45,145,80,.34),
+                rgba(122,191,74,.22),
+                rgba(210,184,92,.30)
+            );
+        backdrop-filter:blur(16px);
+        -webkit-backdrop-filter:blur(16px);
+        box-shadow:
+            inset 0 1px rgba(255,255,255,.16),
+            0 8px 22px rgba(90,190,110,.20);
+        transition:.18s;
+        overflow-wrap:anywhere;
+    }
+
+    .tag-chip:hover{
+        border-color:rgba(195,255,205,.32);
+        box-shadow:
+            inset 0 1px rgba(255,255,255,.22),
+            0 10px 28px rgba(110,220,130,.30);
+    }
+
+    .tag-chip span{
+        flex:1;
+    }
+
+    .tag-chip button{
+        border:none;
+        background:none;
+        color:rgba(255,255,255,.75);
+        font-size:17px;
+        cursor:pointer;
+    }
+   
+    #tagInput{
+        flex:1;
+        min-width:180px;
+        height:34px !important;
+        padding:0;
+        border:none !important;
+        background:transparent !important;
+        box-shadow:none !important;
+        outline:none;
+        color:#ececec;
+        padding-left:5px;
+    }
+
+    #tagInput::placeholder{
+        color:#8f8f8f;
+    }
+
+    .upload-btn{
+        width:100%;
+        height:60px;
+        margin-top:40px;
+        border:none;
+        border-radius:18px;
+        cursor:pointer;
+        background:var(--gold);
+        color:#111;
+        font-size:16px;
+        font-weight:700;
+        letter-spacing:.08em;
+        text-transform:uppercase;
+        transition:
+            .22s,
+            box-shadow .22s;
+    }
+
+    .upload-btn:hover{
         transform:translateY(-2px);
-        box-shadow:0 8px 24px rgba(0,0,0,.35);
+        box-shadow:
+            0 0 24px rgba(215,181,109,.35),
+            0 14px 36px rgba(215,181,109,.18);
     }
 
-    #closeErrorModal:active{
-        transform:scale(.97);
-        background:#1a1a1a;
+    .upload-btn:active{
+        transform:scale(.98);
     }
 
+    .upload-btn:disabled{
+        opacity:.55;
+        cursor:not-allowed;
+        transform:none;
+        box-shadow:none;
+    }
 
-    @media(max-width:900px){
-        .dropdown-menu{
-            width:100%;
+    .upload-btn.loading{
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        gap:12px;
+        pointer-events:none;
+    }
+
+    .upload-btn.success{
+        background:#2ea44f;
+        color:white;
+    }
+
+    .upload-spinner{
+        width:18px;
+        height:18px;
+        border:2px solid rgba(0,0,0,.18);
+        border-top-color:#111;
+        border-radius:50%;
+        animation:uploadSpin .8s linear infinite;
+    }
+
+    @keyframes uploadSpin{
+        to{
+            transform:rotate(360deg);
         }
     }
 
-    .description-counter{
-        margin-top:8px;
-        text-align:right;
-        color:#000000;
-        font-size:13px;
+    .coming-soon{
+        width:100%;
+        min-height:calc(100vh - 152px);
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        text-align:center;
+        font-family:Cinzel,serif;
+        font-size:clamp(42px,6vw,82px);
+        font-weight:700;
+        letter-spacing:.16em;
+        text-transform:uppercase;
+        color:var(--gold);
+        text-shadow:
+            0 0 10px rgba(215,181,109,.18),
+            0 0 24px rgba(215,181,109,.10);
         user-select:none;
     }
 
     @media(max-width:900px){
-        nav{
-            height:58px;
-            padding:0 14px;
+        main{
+            margin-top:58px;
+            padding:18px 0 24px;
         }
-        .nav-left{
-            gap:8px;
+        .sidebar{
+            position:fixed;
+            left:-270px;
+            top:58px;
+            width:250px;
+            height:calc(100vh - 58px);
+            z-index:2000;
+            transition:left .25s;
+            padding:16px 0 22px;
         }
-        .nav-right{
-            gap:8px;
+        .sidebar.open{
+            left:0;
         }
-        .nav-btn{
-            padding:8px 14px;
-            font-size:14px;
+        .main-panel{
+            padding:22px;
+        }
+        .sidebar-mobile-top{
+            display:flex;
+            padding:0 18px 14px;
+        }
+        .sidebar-home{
+            line-height:1;
+        }
+        .sidebar-mobile-divider{
+            display:block;
+            margin:0 auto 10px;
+        }
+        .sidebar-title{
+            font-size:20px;
+            margin:0;
+            padding:12px 0 0;
+            line-height:1;
+        }
+        .sidebar-title::after{
+            margin-top:16px;
+        }
+        .sidebar-item{
+            padding:16px 0;
         }
         .profile-btn{
             width:38px;
             height:38px;
         }
-        .admin-avatar{
-            width:100%;
-            height:100%;
+        .profile-menu{
+            top:60px;
+            right:15px;
+            width:230px;
         }
-        footer{
-            padding:45px 24px;
+        .profile-menu-user{
+            padding:14px;
         }
-        #googleLogin:hover,
-        #closeModal:hover{
-            transform:none;
-            box-shadow:none;
-        }
-        #googleLogin:active{
-            transform:scale(.96);
-            background:#e6e6e6;
-        }
-        #closeModal:active{
-            transform:scale(.96);
-            background:#191919;
+        .logout-btn{
+            padding:15px;
         }
         .icon-btn:hover{
             transform:none;
@@ -1050,6 +1678,28 @@
         }
         #closeErrorModal:active{
             transform:scale(.96);
+        }        
+        nav{
+            height:58px;
+            padding:0 14px;
+        }
+        .nav-left{
+            display:flex;
+            gap:8px;
+            min-width:0;
+        }
+        .nav-right{
+            display:flex;
+            gap:8px;
+            min-width:0;
+        }
+        .nav-btn{
+            padding:8px 14px;
+            font-size:14px;
+        }
+        .profile-btn{
+            width:38px;
+            height:38px;
         }
         .icon-btn{
             width:38px;
@@ -1064,61 +1714,53 @@
             right:15px;
             width:230px;
         }
-        .profile-menu-user{
-            padding:14px;
-        }
-        .logout-btn{
-            padding:15px;
-        }
-        main{
-            margin-top:58px;
-            padding:30px 0;
-        }
-        .footer-description{
-            font-size:14px;
-            line-height:1.7;
-        }
-        .upload-card{
-            width:94%;
-            padding:26px;
-            margin:32px auto;
-        }
-        .upload-card h1{
-            font-size:30px;
-            margin-bottom:34px;
-        }
-        .upload-grid{
+        .upload-layout{
             grid-template-columns:1fr;
-            gap:30px;
         }
-        .cover-column{
-            justify-content:center;
-        }
-        .cover-preview{
-            max-width:220px;
+        .cover-upload{
+            max-width:280px;
             margin:auto;
         }
-        .details-column{
-            gap:18px;
+        .upload-row{
+            flex-direction:column;
+        }   
+        .content-title{
+            text-align:center;
+            width:100%;
+            margin:0 auto 28px;
         }
-        .details-column input,
-        #tags,
-        #description{
+        .epub-picker{
+            width:100%;
+            max-width:100%;
+        }
+        .crop-card{
+            width:100vw;
+            height:100vh;
+            border-radius:0;
+        }
+        .crop-header{
+            padding:18px;
+            text-align:center;
+        }
+        .crop-actions{
             padding:16px;
         }
-        .dropdown-selected{
-            min-height:56px;
-            padding:16px;
+        .crop-actions button{
+            flex:1;
         }
-        .custom-dropdown{
-            width:100%;
+        .author-dropdown{
+            scrollbar-width:none;
         }
-        .dropdown-selected{
-            width:100%;
-            box-sizing:border-box;
+        .author-dropdown::-webkit-scrollbar{
+            width:0;
+            display:none;
         }
-        .upload-btn{
-            height:54px;
+        .coming-soon{
+            min-height:calc(100vh - 102px);
+            font-size:clamp(28px,9vw,44px);
+            letter-spacing:.10em;
+            padding:20px;
+            white-space:nowrap;
         }
     }
 
@@ -1139,11 +1781,11 @@
             <button id="profileBtn" class="profile-btn hidden"></button>
         </div>
     </nav>
-    
+
     <div id="profileMenu" class="profile-menu hidden">
         <button id="profilePageBtn" class="profile-menu-user">
             <img id="menuAvatar" class="profile-menu-avatar">
-            <div>
+            <div class="profile-menu-info">
                 <div id="menuName" class="profile-menu-name"></div>
                 <div id="menuRole" class="profile-menu-role"></div>
             </div>
@@ -1165,175 +1807,87 @@
     </div>
 
 <main>
-    <div class="upload-card">
-        <h1>Upload New EPUB</h1>
-        <div class="upload-grid">
-            <div class="cover-column">
-            <label
-                class="cover-preview"
-                for="coverFile">
-            </label>
-            <input
-                id="coverFile"
-                type="file"
-                accept="image/*">
-            </div>
 
-            <div class="details-column">
-                <input
-                    type="text"
-                    placeholder="Book Title"
-                    id="bookTitle">
-                <input
-                    type="text"
-                    placeholder="Author"
-                    id="bookAuthor">
-                <input
-                    type="text"
-                    id="chapterNumber"
-                    inputmode="numeric"
-                    maxlength="5"
-                    placeholder="Last/Latest Chapter Number">
-                <div
-                    class="custom-dropdown"
-                    id="languageDropdown"
-                    data-search="true"
-                    tabindex="0">
-                    <div class="dropdown-selected">
-                        <span>Choose Book Language</span>
-                        <svg
-                            class="dropdown-arrow"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5">
-                            <polyline points="6 9 12 15 18 9"/>
-                        </svg>
-                    </div>
-                    <div class="dropdown-menu">
-                        <div class="dropdown-options"></div>
-                    </div>
-                </div>
-                <div
-                    class="custom-dropdown"
-                    id="categoryDropdown"
-                    tabindex="0">
-                    <div class="dropdown-selected">
-                        <span>Choose Book Category</span>
-                        <svg
-                            class="dropdown-arrow"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5">
-                            <polyline points="6 9 12 15 18 9"/>
-                        </svg>
-                    </div>
-                    <div class="dropdown-menu">
-                        <div class="dropdown-options"></div>
-                    </div>
-                </div>
-                <div
-                    class="custom-dropdown"
-                    id="statusDropdown"
-                    tabindex="0">
-                    <div class="dropdown-selected">
-                        <span>Choose Book Status</span>
-                        <svg
-                            class="dropdown-arrow"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5">
-                            <polyline points="6 9 12 15 18 9"/>
-                        </svg>
-                    </div>
-                    <div class="dropdown-menu">
-                        <div class="dropdown-options"></div>
-                    </div>
-                </div>
-                <label
-                    class="epub-picker"
-                    for="epubFile">
-                    <div class="epub-icon">
-                        📕
-                    </div>
-                    <div>
-                        <div class="epub-title">
-                            Import EPUB
-                        </div>
-                        <div
-                            class="epub-name"
-                            id="epubName">
-                            No EPUB Selected
-                        </div>
-                    </div>
-                </label>
-                <input
-                    id="epubFile"
-                    type="file"
-                    accept=".epub">
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-mobile-top">
+            <div
+                id="mobileHome"
+                class="sidebar-home hidden">
+                Home
             </div>
+            <button
+                id="closeSidebar"
+                class="sidebar-close">
+                ✕
+            </button>
+        </div>
+        <div class="sidebar-mobile-divider hidden"></div>
+        <div class="sidebar-title">
+            Upload FILES
         </div>
         <div
-            id="alternateTitlesContainer"
-            class="tags-container">
-            <input
-                id="alternateTitleInput"
-                placeholder="Alternate Titles ('LoTM,' '诡秘之主,') [Optional]">
+            class="sidebar-item active"
+            data-tab="epubs">
+            Upload EPUBs
         </div>
         <div
-            id="genresContainer"
-            class="tags-container">
-            <input
-                id="genreInput"
-                placeholder="Genres ('Fantasy,' 'Romance,' • max 5)">
+            class="sidebar-item"
+            data-tab="chapters">
+            Upload Chapters
         </div>
-        <div
-            id="tagsContainer"
-            class="tags-container">
-            <input
-                id="tagInput"
-                placeholder="Tags ('War,' 'Slice of life,' • max 20)">
-        </div>
-        <textarea
-            placeholder="Description (max 8000 characters)"
-            maxlength="8000"
-            id="description"></textarea>
-        <div class="description-counter">
-            <span id="descriptionCount">0</span>/8000
-        </div>
-        <button
-            id="uploadBtn"
-            class="upload-btn">
-            <span class="upload-text">
-                Upload EPUB
-            </span>
-            <span
-                class="upload-loader hidden">
-            </span>
-        </button>
-    </div>
+    </aside>
+
+    <section
+        id="mainPanel"
+        class="main-panel">
+    </section>
 
 </main>
+
+<div id="cropModal" class="crop-modal hidden">
+    <div class="crop-card">
+        <div class="crop-header">
+            Crop Book Cover
+        </div>
+        <div class="crop-body">
+            <img id="cropImage">
+        </div>
+        <div class="crop-actions">
+            <button
+                id="cropCancel"
+                class="crop-cancel">
+                Cancel
+            </button>
+            <button
+                id="cropConfirm"
+                class="crop-confirm">
+                Confirm
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="errorModal" class="modal hidden">
+    <div class="modal-card">
+        <h2 id="errorTitle">Upload Failed</h2>
+        <p id="errorMessage">Something went wrong.</p>
+        <button id="closeErrorModal">Close</button>
+    </div>
+</div>
 
     <footer>
         <div style="font-family:Cinzel,serif;font-size:28px;color:var(--gold);margin-bottom:12px;">
             蛊
         </div>
-
         <div style="font-size:22px;margin-bottom:10px;">
             Immortal Library
         </div>
-
         <div class="footer-description">
             An ever-growing library dedicated to preserving Literature for readers around the world
         </div>
-
         <div style="margin-top:40px;color:#666;font-size:14px;">
             © 2026 Febris Forge. All Rights Reserved
         </div>
-
         <div style="margin-top:12px;font-size:13px;">
             <a class="footer-link privacy-link" href="/pp">Privacy Policy</a>
             <span class="footer-divider">•</span>
@@ -1341,19 +1895,9 @@
         </div>
     </footer>
 
-    <div id="errorModal" class="modal hidden">
-        <div class="modal-card">
-            <h2 id="errorTitle">Invalid File</h2>
-            <p id="errorMessage"></p>
-            <button id="closeErrorModal">
-                Close
-            </button>
-        </div>
-    </div>
-
 <script type="module">
 
-    import { auth, db } from "./src/firebase.js";
+    import { auth, db } from "./src/firebase";
 
     import {
         onAuthStateChanged,
@@ -1362,798 +1906,23 @@
 
     import {
         doc,
-        getDoc,
-        setDoc,
-        serverTimestamp
+        getDoc
     } from "firebase/firestore";
 
-    const profileBtn = document.getElementById("profileBtn");
-    const profileMenu = document.getElementById("profileMenu");
-    const menuAvatar = document.getElementById("menuAvatar");
-    const menuName = document.getElementById("menuName");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const menuBtn = document.getElementById("menuBtn");
+    const profileBtn=document.getElementById("profileBtn");
+    const errorModal=document.getElementById("errorModal");
+    const errorTitle=document.getElementById("errorTitle");
+    const errorMessage=document.getElementById("errorMessage");
+    const closeErrorModal=document.getElementById("closeErrorModal");
+    const menuBtn=document.getElementById("menuBtn");
+    const profileMenu=document.getElementById("profileMenu");
+    const menuAvatar=document.getElementById("menuAvatar");
+    const menuName=document.getElementById("menuName");
     const menuRole=document.getElementById("menuRole");
     const profilePageBtn=document.getElementById("profilePageBtn");
+    const logoutBtn=document.getElementById("logoutBtn");
 
     let ignoreScrollUntil = 0;
-
-    const epubFile = document.getElementById("epubFile");
-    const epubName = document.getElementById("epubName");
-    const coverFile = document.getElementById("coverFile");
-    const coverPreview = document.querySelector(".cover-preview");
-    const chapterNumber = document.getElementById("chapterNumber");
-    const alternateTitleInput = document.getElementById("alternateTitleInput");
-    const alternateTitlesContainer = document.getElementById("alternateTitlesContainer");
-    const genreInput = document.getElementById("genreInput");
-    const genresContainer = document.getElementById("genresContainer");
-    const tagInput = document.getElementById("tagInput");
-    const tagsContainer = document.getElementById("tagsContainer");
-    const description = document.getElementById("description");
-    const descriptionCount = document.getElementById("descriptionCount");
-    const errorModal = document.getElementById("errorModal");
-    const errorTitle = document.getElementById("errorTitle");
-    const errorMessage = document.getElementById("errorMessage");
-    const closeErrorModal = document.getElementById("closeErrorModal");
-    const uploadBtn = document.getElementById("uploadBtn");
-    const uploadText = uploadBtn.querySelector(".upload-text");
-    const uploadLoader = uploadBtn.querySelector(".upload-loader");
-
-    function startUpload(){
-        uploadBtn.disabled = true;
-        uploadText.textContent = "Uploading EPUB...";
-        uploadLoader.classList.remove("hidden");
-    }
-
-    function setUploadStatus(text){
-        uploadText.textContent = text;
-    }
-
-    function finishUpload(){
-        uploadLoader.classList.add("hidden");
-        uploadText.textContent = "Done ✓";
-        showError(
-            "Upload Complete",
-            "EPUB successfully uploaded"
-        );
-        uploadText.textContent = "Upload EPUB";
-        uploadBtn.disabled = false;
-    }
-
-    function resetUpload(){
-        uploadLoader.classList.add(
-            "hidden"
-        );
-        uploadText.textContent =
-            "Upload EPUB";
-        uploadBtn.disabled = false;
-    }
-
-    function resetUploadForm(){
-        bookTitle.value = "";
-        bookAuthor.value = "";
-        chapterNumber.value = "";
-        description.value = "";
-        descriptionCount.textContent = "0";
-        coverFile.value = "";
-        epubFile.value = "";
-        coverPreview.style.backgroundImage = "";
-        coverPreview.style.backgroundSize = "";
-        coverPreview.style.backgroundPosition = "";
-        coverPreview.style.backgroundRepeat = "";
-        coverPreview.classList.remove("has-cover");
-        epubName.textContent = "No EPUB Selected";
-        alternateTitles.length = 0;
-        genres.length = 0;
-        tags.length = 0;
-        alternateTitlesContainer
-            .querySelectorAll(".tag-chip")
-            .forEach(chip => chip.remove());
-        genresContainer
-            .querySelectorAll(".tag-chip")
-            .forEach(chip => chip.remove());
-        tagsContainer
-            .querySelectorAll(".tag-chip")
-            .forEach(chip => chip.remove());
-        alternateTitleInput.value = "";
-        genreInput.value = "";
-        tagInput.value = "";
-        [
-            languageDropdown,
-            categoryDropdown,
-            statusDropdown
-        ].forEach(dropdown => {
-            dropdown.selected = "";
-            dropdown.label.textContent = dropdown.root.id === "languageDropdown"
-                ? "Choose Book Language"
-                : dropdown.root.id === "categoryDropdown"
-                    ? "Choose Book Category"
-                    : "Choose Book Status";
-            dropdown.root.classList.remove("selected");
-            dropdown.render();
-        });
-        chapterNumber.placeholder = "Last/Latest Chapter Number";
-    }
-
-    function makeBookId(name){
-        return name
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g,"")
-            .replace(/[^a-zA-Z0-9]/g,"")
-            .toLowerCase();
-    }
-
-    async function getUniqueBookId(baseId){
-        let bookId = baseId;
-        while(true){
-            const existing = await getDoc(
-                doc(db, "epubs", bookId)
-            );
-            if(!existing.exists()){
-                return bookId;
-            }
-            bookId += "a";
-        }
-    }
-
-    function createUploadObject(){
-        return{
-            bookId:
-                makeBookId(
-                    bookTitle.value
-                ),
-            bookName:
-                bookTitle.value.trim(),
-            authorName:
-                bookAuthor.value.trim(),
-            language:
-                languageDropdown.selected,
-            category:
-                categoryDropdown.selected,
-            status:
-                statusDropdown.selected,
-            chapterNumber:
-                chapterNumber.value
-                    ? parseInt(chapterNumber.value, 10)
-                    : 0,
-            mainGenre:
-                genres.length
-                    ? genres[0]
-                    : "",
-            genres:
-                genres.slice(1),
-            alternateTitles:
-                [...alternateTitles],
-            tags:
-                [...tags],
-            description:
-                description.value.trim(),
-            coverFile:
-                coverFile.files[0],
-            epubFile:
-                epubFile.files[0]
-        };
-    }
-
-    const LANGUAGES = [
-        "English - English",
-        "简体中文 - Simplified Chinese",
-        "繁體中文 - Traditional Chinese",
-        "हिन्दी - Hindi",
-        "Español - Spanish",
-        "Français - French",
-        "Português - Portuguese",
-        "العربية - Arabic",
-        "Русский - Russian",
-        "日本語 - Japanese",
-        "한국어 - Korean",
-        "Türkçe - Turkish",
-        "Tiếng Việt - Vietnamese",
-        "Italiano - Italian",
-        "فارسی - Persian",
-        "Polski - Polish",
-        "Українська - Ukrainian",
-        "Română - Romanian",
-        "Filipino - Filipino",
-        "Nederlands - Dutch",
-        "Svenska - Swedish",
-        "Dansk - Danish",
-        "Suomi - Finnish"
-    ];
-
-    const CATEGORIES = [
-        "Book",
-        "WebNovel",
-        "Novel",
-        "LightNovel",
-        "Short Story",
-        "Poetry",
-        "Other"
-    ];
-
-    const BOOK_STATUS = [
-        "On Going",
-        "On Hold",
-        "Completed",
-        "Dropped"
-    ];
-
-    let openedDropdown = null;
-
-    class CustomDropdown {
-        constructor(selector, items){
-            this.root = document.querySelector(selector);
-            this.items = items;
-            this.filtered = [...items];
-            this.selected = "";
-            this.highlight = -1;
-            this.selectedBox = this.root.querySelector(".dropdown-selected");
-            this.label = this.selectedBox.querySelector("span");
-            this.menu = this.root.querySelector(".dropdown-menu");
-            this.options = this.root.querySelector(".dropdown-options");
-            this.render();
-            this.bindEvents();
-        }
-        render(){
-            this.options.innerHTML = "";
-            this.items.forEach(text=>{
-                const option = document.createElement("div");
-                option.className = "dropdown-option";
-                option.textContent = text;
-                option.dataset.value = text;
-                if(text===this.selected){
-                    option.classList.add("active");
-                }
-                this.options.appendChild(option);
-            });
-        }
-        bindEvents(){
-            this.selectedBox.addEventListener(
-                "click",
-                e=>{
-                    e.stopPropagation();
-                    if(
-                        openedDropdown &&
-                        openedDropdown!==this
-                    ){
-                        openedDropdown.close();
-                    }
-                    this.toggle();
-                }
-            );
-            this.options.addEventListener(
-                "click",
-                e=>{
-                    const option =
-                        e.target.closest(".dropdown-option");
-                    if(!option) return;
-                    this.choose(
-                        option.dataset.value
-                    );
-                }
-            );
-            this.root.addEventListener(
-                "keydown",
-                e=>this.handleKey(e)
-            );
-        }
-        toggle(){
-            if(this.root.classList.contains("open")){
-                this.close();
-            }else{
-                this.open();
-            }
-        }
-        open(){
-            this.root.classList.add("open");
-            openedDropdown = this;
-            this.render();
-            this.highlight = -1;
-        }
-        close(){
-            this.root.classList.remove("open");
-            if(openedDropdown===this){
-                openedDropdown=null;
-            }
-        }
-        choose(value){
-            this.selected = value;
-            this.label.textContent = value;
-            this.root.classList.add("selected");
-            this.render();
-            this.close();
-            if (this.root.id === "statusDropdown") {
-                if (value === "Completed" || value === "Dropped") {
-                    chapterNumber.placeholder = "Last Chapter Number";
-                } else {
-                    chapterNumber.placeholder = "Latest Chapter Number";
-                }
-            }
-        }
-        setValue(value){
-            const match =
-                this.items.find(item=>
-                    item.toLowerCase()
-                        .includes(value.toLowerCase())
-                );
-            if(!match) return;
-            this.choose(match);
-        }
-        handleKey(e){
-            if(!this.root.classList.contains("open")) return;
-            const options = [...this.options.querySelectorAll(".dropdown-option")];
-            if(!options.length) return;
-            switch(e.key){
-                case "ArrowDown":
-                    e.preventDefault();
-                    this.highlight = Math.min(this.highlight + 1, options.length - 1);
-                    break;
-                case "ArrowUp":
-                    e.preventDefault();
-                    this.highlight = Math.max( this.highlight - 1, 0 );
-                    break;
-                case "Enter":
-                    e.preventDefault();
-                    if(this.highlight >= 0){
-                        options[this.highlight].click();
-                    }
-                    return;
-                case "Escape":
-                    this.close();
-                    return;
-                default:
-                    return;
-            }
-            options.forEach(o=>o.classList.remove("active"));
-            options[this.highlight].classList.add("active");
-            options[this.highlight].scrollIntoView({
-                block:"nearest"
-            });
-        }
-    }
-
-    document.addEventListener("click",()=>{
-        if(openedDropdown){
-            openedDropdown.close();
-        }
-    });
-
-    document.addEventListener("keydown",e=>{
-        if(
-            e.key==="Escape" &&
-            openedDropdown
-        ){
-            openedDropdown.close();
-        }
-    });
-
-    chapterNumber.addEventListener("input", () => {
-        chapterNumber.value = chapterNumber.value
-            .replace(/\D/g, "")
-            .slice(0, 5);
-    });
-
-    const languageDropdown =
-        new CustomDropdown(
-            "#languageDropdown",
-            LANGUAGES
-        );
-
-    const categoryDropdown =
-        new CustomDropdown(
-            "#categoryDropdown",
-            CATEGORIES
-        );
-
-    const statusDropdown =
-        new CustomDropdown(
-            "#statusDropdown",
-            BOOK_STATUS
-        );
-
-    description.addEventListener("input", () => {
-        descriptionCount.textContent =
-            description.value.length;
-    });
-
-    function showError(title, message){
-        errorTitle.textContent = title;
-        errorMessage.textContent = message;
-        errorModal.classList.remove("hidden");
-    }
-
-    closeErrorModal.onclick = () => {
-        errorModal.classList.add("hidden");
-    };
-
-    errorModal.onclick = e => {
-        if(e.target === errorModal){
-            errorModal.classList.add("hidden");
-        }
-    };
-
-    async function readEpubMetadata(file){
-        const zip = await JSZip.loadAsync(file);
-        const containerFile = zip.file("META-INF/container.xml");
-        if(!containerFile){
-            throw new Error("container.xml not found.");
-        }
-        const parser = new DOMParser();
-        const containerDoc = parser.parseFromString(
-            await containerFile.async("string"),
-            "application/xml"
-        );
-        const rootfile =
-            containerDoc.getElementsByTagName("rootfile")[0];
-        if(!rootfile){
-            throw new Error("Root OPF not found.");
-        }
-        const opfPath = rootfile.getAttribute("full-path");
-        const opfFile = zip.file(opfPath);
-        if(!opfFile){
-            throw new Error("Package document not found.");
-        }
-        const opfDoc = parser.parseFromString(
-            await opfFile.async("string"),
-            "application/xml"
-        );
-        const metadata = opfDoc.getElementsByTagName("metadata")[0];
-        if(!metadata){
-            throw new Error("Metadata section missing.");
-        }
-        function first(...names){
-            for(const name of names){
-                const node = metadata.getElementsByTagName(name)[0];
-                if(node?.textContent?.trim()){
-                    return node.textContent.trim();
-                }
-            }
-            return "";
-        }
-        function all(...names){
-            const result = [];
-            for(const name of names){
-                const nodes = metadata.getElementsByTagName(name);
-                for(const node of nodes){
-                    const value = node.textContent.trim();
-                    if(
-                        value &&
-                        !result.includes(value)
-                    ){
-                        result.push(value);
-                    }
-                }
-            }
-            return result;
-        }
-        return{
-            title:
-                first(
-                    "dc:title",
-                    "title"
-                ),
-            author:
-                first(
-                    "dc:creator",
-                    "creator"
-                ),
-            language:
-                first(
-                    "dc:language",
-                    "language"
-                ),
-            description:
-                first(
-                    "dc:description",
-                    "description"
-                ),
-            publisher:
-                first(
-                    "dc:publisher",
-                    "publisher"
-                ),
-            identifier:
-                first(
-                    "dc:identifier",
-                    "identifier"
-                ),
-            date:
-                first(
-                    "dc:date",
-                    "date"
-                ),
-            rights:
-                first(
-                    "dc:rights",
-                    "rights"
-                ),
-            subjects:
-                all(
-                    "dc:subject",
-                    "subject"
-                )
-        };
-    }
-
-    function isEmpty(input){
-        return input.value.trim()==="";
-    }
-
-    function isDescriptionEmpty(){
-        return description.value.trim()==="";
-    }
-
-    document.addEventListener("keydown",e=>{
-        if(
-            e.key==="Escape" &&
-            !errorModal.classList.contains("hidden")
-        ){
-            errorModal.classList.add("hidden");
-        }
-    });
-
-    const alternateTitles = [];
-    function addAlternateTitle(){
-        let value = alternateTitleInput.value.trim();
-        if(value.endsWith(",")){
-            value = value.slice(0,-1).trim();
-        }
-        if(!value){
-            alternateTitleInput.value = "";
-            return;
-        }
-        const normalized = value.toLowerCase();
-        if(alternateTitles.includes(normalized)){
-            alternateTitleInput.value = "";
-            return;
-        }
-        alternateTitles.push(normalized);
-        const chip = document.createElement("div");
-        chip.className = "tag-chip genre-chip";
-        chip.innerHTML = `
-            ${value}
-            <span class="tag-remove">✕</span>
-        `;
-        chip.querySelector(".tag-remove").onclick = () => {
-            alternateTitles.splice(
-                alternateTitles.indexOf(normalized),
-                1
-            );
-            chip.remove();
-        };
-        alternateTitlesContainer.insertBefore(
-            chip,
-            alternateTitleInput
-        );
-        alternateTitleInput.value = "";
-    }
-
-    alternateTitleInput.addEventListener("input",()=>{
-        if(alternateTitleInput.value.endsWith(",")){
-            addAlternateTitle();
-        }
-    });
-
-    alternateTitleInput.addEventListener("keydown",e=>{
-        if(e.key==="Enter"){
-            e.preventDefault();
-            addAlternateTitle();
-        }
-    });
-
-    const genres = [];
-    genreInput.maxLength = 25;
-    function refreshGenreStyles() {
-        [...genresContainer.querySelectorAll(".tag-chip")].forEach((chip, index) => {
-            chip.classList.remove("genre-main", "genre-chip");
-
-            if (index === 0) {
-                chip.classList.add("genre-main");
-            } else {
-                chip.classList.add("genre-chip");
-            }
-        });
-    }
-
-    function addGenre() {
-        let value = genreInput.value.trim();
-        if (value.endsWith(",")) {
-            value = value.slice(0, -1).trim();
-        }
-        if (!value) {
-            genreInput.value = "";
-            return;
-        }
-        if (value.length > 25) {
-            genreInput.value = "";
-            alert("Each genre may contain at most 25 characters.");
-            return;
-        }
-        if (genres.length >= 5) {
-            genreInput.value = "";
-            alert("Maximum of 5 genres allowed.");
-            return;
-        }
-        const normalized = value.toLowerCase();
-        if (genres.includes(normalized)) {
-            genreInput.value = "";
-            return;
-        }
-        genres.push(normalized);
-        const chip = document.createElement("div");
-        chip.className = "tag-chip";
-        chip.innerHTML = `
-            ${value}
-            <span class="tag-remove">✕</span>
-        `;
-        chip.querySelector(".tag-remove").onclick = () => {
-            genres.splice(genres.indexOf(normalized), 1);
-            chip.remove();
-            refreshGenreStyles();
-        };
-        genresContainer.insertBefore(chip, genreInput);
-        refreshGenreStyles();
-        genreInput.value = "";
-    }
-
-    genreInput.addEventListener("input", () => {
-        if (genreInput.value.endsWith(",")) {
-            addGenre();
-        }
-    });
-
-    genreInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            addGenre();
-        }
-    });
-
-    const tags = [];
-    tagInput.maxLength = 25;
-    function addTag() {
-        let value = tagInput.value.trim();
-        if (value.endsWith(",")) {
-            value = value.slice(0, -1).trim();
-        }
-        if (!value) {
-            tagInput.value = "";
-            return;
-        }
-        if (value.length > 25) {
-            tagInput.value = "";
-            alert("Each tag may contain at most 25 characters.");
-            return;
-        }
-        if (tags.length >= 20) {
-            tagInput.value = "";
-            alert("Maximum of 20 tags allowed.");
-            return;
-        }
-        if (tags.includes(value.toLowerCase())) {
-            tagInput.value = "";
-            return;
-        }
-        tags.push(value.toLowerCase());
-        const chip = document.createElement("div");
-        chip.className = "tag-chip";
-        chip.innerHTML = `
-            ${value}
-            <span class="tag-remove">✕</span>
-        `;
-        chip.querySelector(".tag-remove").onclick = () => {
-            tags.splice(tags.indexOf(value.toLowerCase()), 1);
-            chip.remove();
-        };
-        tagsContainer.insertBefore(chip, tagInput);
-        tagInput.value = "";
-    }
-
-    tagInput.addEventListener("input", () => {
-        if (tagInput.value.endsWith(",")) {
-            addTag();
-        }
-    });
-
-    tagInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            addTag();
-        }
-    });
-
-    coverFile.onchange = () => {
-        if(!coverFile.files.length) return;
-        const file = coverFile.files[0];
-        if(!file.type.startsWith("image/")){
-            coverFile.value = "";
-            showError(
-                "Invalid Book Cover",
-                "Only image files can be used as book covers."
-            );
-            return;
-        }
-        if(file.size > 1024 * 1024){
-            coverFile.value = "";
-            showError(
-                "Image Too Large",
-                "Book cover images must not exceed 1 MB."
-            );
-            return;
-        }
-        const reader = new FileReader();
-        reader.onload = e => {
-            coverPreview.style.backgroundImage = `url(${e.target.result})`;
-            coverPreview.style.backgroundSize = "cover";
-            coverPreview.style.backgroundPosition = "center";
-            coverPreview.style.backgroundRepeat = "no-repeat";
-            coverPreview.classList.add("has-cover");
-        };
-        reader.readAsDataURL(file);
-    };
-
-    epubFile.onchange = async () => {
-        if(!epubFile.files.length){
-            epubName.textContent = "No EPUB Selected";
-            return;
-        }
-        const file = epubFile.files[0];
-        const isEPUB =
-            file.name.toLowerCase().endsWith(".epub") ||
-            file.type === "application/epub+zip";
-        if(!isEPUB){
-            epubFile.value = "";
-            epubName.textContent = "No EPUB Selected";
-            showError(
-                "Invalid EPUB",
-                "Only EPUB files can be imported"
-            );
-            return;
-        }
-        epubName.textContent = file.name;
-        try{
-            const meta = await readEpubMetadata(file);
-            const title = document.getElementById("bookTitle");
-            const author = document.getElementById("bookAuthor");
-            if(
-                isEmpty(title) &&
-                meta.title
-            ){
-                title.value =
-                    meta.title;
-            }
-            if(
-                isEmpty(author) &&
-                meta.author
-            ){
-                author.value =
-                    meta.author;
-            }
-            if(
-                isDescriptionEmpty() &&
-                meta.description
-            ){
-                description.value =
-                    meta.description;
-                descriptionCount.textContent =
-                    meta.description.length;
-            }
-            if(
-                !languageDropdown.selected &&
-                meta.language
-            ){
-                languageDropdown.setValue(
-                    meta.language
-                );
-            }
-        }
-        catch(err){
-            console.error(
-                "Metadata read failed",
-                err
-            );
-        }
-    };
 
     function showLoggedIn(profile,isOwner){
         profileBtn.classList.remove("hidden");
@@ -2221,11 +1990,12 @@
         }
     };
 
-    document.addEventListener("click", (e) => {
-        if (
-            !profileMenu.contains(e.target) &&
+    document.addEventListener("click",(e)=>{
+        if(
+            !profileMenu.contains(e.target)
+            &&
             !profileBtn.contains(e.target)
-        ) {
+        ){
             profileMenu.classList.add("hidden");
         }
     });
@@ -2237,141 +2007,1554 @@
         }
     });
 
-    logoutBtn.onclick = async () => {
+    logoutBtn.onclick=async()=>{
+        profileMenu.classList.add("hidden");
         await signOut(auth);
-        window.location.href = "/index";
     };
 
     profilePageBtn.onclick=()=>{
         window.location.href="/profile";
     };
 
-    menuBtn.onclick = () => {
-        window.location.href = "/index";
+    const LANGUAGES = [
+        "English - English",
+        "简体中文 - Simplified Chinese",
+        "繁體中文 - Traditional Chinese",
+        "हिन्दी - Hindi",
+        "Español - Spanish",
+        "Français - French",
+        "Português - Portuguese",
+        "العربية - Arabic",
+        "Русский - Russian",
+        "日本語 - Japanese",
+        "한국어 - Korean",
+        "Türkçe - Turkish",
+        "Tiếng Việt - Vietnamese",
+        "Italiano - Italian",
+        "فارسی - Persian",
+        "Polski - Polish",
+        "Українська - Ukrainian",
+        "Română - Romanian",
+        "Filipino - Filipino",
+        "Nederlands - Dutch",
+        "Svenska - Swedish",
+        "Dansk - Danish",
+        "Suomi - Finnish"
+    ];
+
+    const CATEGORIES = [
+        "Book",
+        "WebNovel",
+        "Novel",
+        "LightNovel",
+        "Short Story",
+        "Poetry",
+        "Other"
+    ];
+
+    const BOOK_STATUS = [
+        "On Going",
+        "On Hold",
+        "Completed",
+        "Dropped"
+    ];
+
+    const ORIGINS = [
+        "China",
+        "Japan",
+        "Korea",
+        "India",
+        "Russia",
+        "Southeast Asia",
+        "Middle East",
+        "North America",
+        "South America",
+        "Europe",
+        "Africa",
+        "Oceania",
+        "Other"
+    ];
+
+    const pages={
+
+        epubs:`
+        <h1 class="content-title">
+            Upload EPUBs
+        </h1>
+        <div class="upload-layout">
+            <label class="cover-upload">
+                <input
+                    type="file"
+                    id="coverInput"
+                    accept="image/*">
+                <div
+                    id="coverContent"
+                    class="cover-placeholder">
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6">
+                        <rect x="4" y="3" width="16" height="18" rx="2"/>
+                        <path d="M8 8h8"/>
+                        <path d="M8 12h5"/>
+                        <path d="M8 16h8"/>
+                    </svg>
+                    <h3>Book Cover</h3>
+                    <p>
+                        Click to upload<br>
+                        JPG • PNG • WEBP
+                    </p>
+                </div>
+            </label>
+            <div class="upload-right">
+                <div class="upload-row">
+                    <div class="field">
+                        <label for="bookName">Book Name</label>
+                        <input
+                            id="bookName"
+                            type="text"
+                            placeholder="Enter Book Name">
+                    </div>
+                    <div class="field author-field">
+                        <label for="authorName">Author Name</label>
+                        <input
+                            id="authorName"
+                            type="text"
+                            autocomplete="off"
+                            placeholder="Enter Author Name">
+                        <div
+                            id="authorDropdown"
+                            class="author-dropdown">
+                        </div>
+                    </div>
+                </div>
+                <div class="upload-row">
+                    <div class="field">
+                        <label for="chapterNumber">Latest/Last Chapter Number</label>
+                        <input
+                            id="chapterNumber"
+                            type="text"
+                            inputmode="numeric"
+                            maxlength="5"
+                            placeholder="Latest Chapter Number">
+                    </div>
+                    <div class="field">
+                        <label for="originBtn">
+                            Origin
+                        </label>
+                        <div
+                            class="custom-select"
+                            data-placeholder="Origin">
+                            <button
+                                id="originBtn"
+                                class="select-btn"
+                                type="button">
+                                <span class="select-text">Origin</span>
+                                <svg
+                                    class="dropdown-arrow"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.5">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </button>
+                            <div class="dropdown-menu">
+                                ${ORIGINS.map(origin=>`
+                                    <div
+                                        class="dropdown-option"
+                                        data-value="${origin}">
+                                        ${origin}
+                                    </div>
+                                `).join("")}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="upload-row">
+                    <div class="field">
+                        <label for="categoryBtn">Category</label>
+                        <div
+                            class="custom-select"
+                            data-placeholder="Category">
+                            <button
+                                id="categoryBtn"
+                                class="select-btn"
+                                type="button">
+                                <span class="select-text">Category</span>
+                                <svg
+                                    class="dropdown-arrow"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.5">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </button>
+                            <div class="dropdown-menu">
+                                ${CATEGORIES.map(category=>`
+                                    <div
+                                        class="dropdown-option"
+                                        data-value="${category}">
+                                        ${category}
+                                    </div>
+                                `).join("")}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="statusBtn">Status</label>
+                        <div
+                            class="custom-select"
+                            data-placeholder="Status">
+                            <button
+                                id="statusBtn"
+                                class="select-btn"
+                                type="button">
+                                <span class="select-text">Status</span>
+                                <svg
+                                    class="dropdown-arrow"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.5">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </button>
+                            <div class="dropdown-menu">
+                                ${BOOK_STATUS.map(status=>`
+                                    <div
+                                        class="dropdown-option"
+                                        data-value="${status}">
+                                        ${status}
+                                    </div>
+                                `).join("")}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Language</label>
+                        <div
+                            class="custom-select"
+                            data-placeholder="Language">
+                            <button
+                                id="languageBtn"
+                                class="select-btn"
+                                type="button">
+                                <span class="select-text">Language</span>
+                                <svg
+                                    class="dropdown-arrow"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.5">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </button>
+                            <div class="dropdown-menu">
+                                ${LANGUAGES.map(language=>`
+                                    <div
+                                        class="dropdown-option"
+                                        data-value="${language}">
+                                        ${language}
+                                    </div>
+                                `).join("")}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <label
+                    class="epub-picker"
+                    for="epubInput">
+                    <div class="epub-icon">
+                        📕
+                    </div>
+                    <div class="epub-info">
+                        <div
+                            class="epub-title"
+                            id="epubTitle">
+                            Import EPUB
+                        </div>
+                        <div
+                            class="epub-name"
+                            id="epubFileName">
+                            No EPUB Selected
+                        </div>
+                    </div>
+                </label>
+                <input
+                    id="epubInput"
+                    type="file"
+                    accept=".epub"
+                    hidden>
+            </div>
+        </div>
+        <div class="metadata-section">
+            <div class="field">
+                <label>
+                    Alternate Titles
+                </label>
+                <div
+                    id="alternateTitles"
+                    class="chip-input">
+                    <input
+                        id="alternateInput"
+                        type="text"
+                        placeholder="Type title then press Enter/Comma">
+                </div>
+            </div>
+            <div class="field">
+                <label>Genres</label>
+                <div class="author-field">
+                    <div
+                        id="genreContainer"
+                        class="chip-input">
+                        <input
+                            id="genreInput"
+                            type="text"
+                            maxlength="30"
+                            placeholder="Type genre then press Enter/Comma">
+                    </div>
+                    <div
+                        id="genreDropdown"
+                        class="author-dropdown">
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <label>Tags</label>
+                <div class="author-field">
+                    <div
+                        id="tagContainer"
+                        class="chip-input">
+                        <input
+                            id="tagInput"
+                            type="text"
+                            maxlength="30"
+                            placeholder="Type genre then press Enter/Comma (MAX 25)">
+                    </div>
+                    <div
+                        id="tagDropdown"
+                        class="author-dropdown">
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <label for="description">
+                    Description
+                </label>
+                <textarea
+                    id="description"
+                    rows="8"
+                    maxlength="8000"
+                    placeholder="Description... (10 - 8000 Characters)"></textarea>
+                <div class="description-counter">
+                    <span id="descriptionCount">0</span>/8000
+                </div>
+            </div>
+        </div>
+        <button
+            id="uploadBookBtn"
+            type="button"
+            class="upload-btn">
+            Upload EPUB
+        </button>
+
+        `,
+
+        chapters:`
+            <div class="coming-soon">
+                Coming Soon
+            </div>
+        `,
+
     };
 
-    uploadBtn.onclick = async () => {
-        const upload = createUploadObject();
-        upload.bookId = await getUniqueBookId(
-            upload.bookId
-        );
-        if(
-            !upload.bookName ||
-            !upload.authorName ||
-            !upload.chapterNumber ||
-            !upload.language ||
-            !upload.category ||
-            !upload.status ||
-            !upload.mainGenre ||
-            !upload.tags ||
-            !upload.description ||
-            !upload.coverFile ||
-            !upload.epubFile
-        ){
-            showError(
-                "Missing Information",
-                "Please fill every required field and select both the cover image and EPUB."
-            );
-            return;
+    const mainPanel=document.getElementById("mainPanel");
+
+    function loadPage(name){
+        mainPanel.innerHTML = pages[name];
+        if(name === "epubs"){
+            initUploadDropdowns();
         }
-        startUpload();
-        try{
-            const formData = new FormData();
+    }
+
+    document
+    .querySelectorAll(".sidebar-item[data-tab]")
+    .forEach(item=>{
+        item.onclick=()=>{
+            document
+            .querySelectorAll(".sidebar-item[data-tab]")
+            .forEach(i=>i.classList.remove("active"));
+            item.classList.add("active");
+            loadPage(item.dataset.tab);
+            if(window.innerWidth<=900){
+                sidebar.classList.remove("open");
+            }
+        };
+    });
+
+    loadPage("epubs");
+
+    const sidebar=document.getElementById("sidebar");
+    const mobileHome=document.getElementById("mobileHome");
+    const closeSidebar=document.getElementById("closeSidebar");
+
+    function mobileLayout(){
+        if(window.innerWidth<=900){
+            mobileHome.classList.remove("hidden");
+        }else{
+            mobileHome.classList.add("hidden");
+            sidebar.classList.remove("open");
+        }
+    }
+
+    function initUploadDropdowns(){
+        const epubInput=document.getElementById("epubInput");
+        const epubFileName=document.getElementById("epubFileName");
+        const epubTitle=document.getElementById("epubTitle");
+        const chapterInput=document.getElementById("chapterNumber");
+        const chapterLabel=document.querySelector('label[for="chapterNumber"]');
+        const statusSelect=document.querySelector("#statusBtn").closest(".custom-select");
+        const coverInput=document.getElementById("coverInput");
+        const cropModal=document.getElementById("cropModal");
+        const cropImage=document.getElementById("cropImage");
+        const cropCancel=document.getElementById("cropCancel");
+        const cropConfirm=document.getElementById("cropConfirm");
+        const coverContent=document.getElementById("coverContent");
+        const authorInput=document.getElementById("authorName");
+        let authorIndex=-1;
+        const authorDropdown=document.getElementById("authorDropdown");
+        let cropper;
+        let croppedCoverFile = null;
+        const alternateContainer=document.getElementById("alternateTitles");
+        const alternateInput=document.getElementById("alternateInput");
+        const alternateTitles=[];
+        const genreContainer=document.getElementById("genreContainer");
+        const genreInput=document.getElementById("genreInput");
+        const genreDropdown=document.getElementById("genreDropdown");
+        const selectedGenres=[];
+        let genreIndex=-1;
+        const tagContainer=document.getElementById("tagContainer");
+        const tagInput=document.getElementById("tagInput");
+        const tagDropdown=document.getElementById("tagDropdown");
+        const uploadBtn=document.getElementById("uploadBookBtn");
+        function setUploadButtonLoading(){
+            uploadBtn.disabled=true;
+            uploadBtn.classList.remove("success");
+            uploadBtn.classList.add("loading");
+            uploadBtn.innerHTML=`
+                Uploading EPUB
+                <span class="upload-spinner"></span>
+            `;
+        }
+        function setUploadButtonSuccess(){
+            uploadBtn.classList.remove("loading");
+            uploadBtn.classList.add("success");
+            uploadBtn.innerHTML="✓ Done";
+        }
+        function resetUploadButton(){
+            uploadBtn.disabled=false;
+            uploadBtn.classList.remove("loading","success");
+            uploadBtn.textContent="Upload EPUB";
+        }
+        const selectedTags=[];
+        let tagIndex=-1;
+        function titleCase(text){
+            const keepLower=new Set([
+                "a",
+                "an",
+                "and",
+                "as",
+                "at",
+                "but",
+                "by",
+                "for",
+                "from",
+                "if",
+                "in",
+                "into",
+                "is",
+                "nor",
+                "of",
+                "off",
+                "on",
+                "onto",
+                "or",
+                "out",
+                "over",
+                "per",
+                "so",
+                "than",
+                "the",
+                "to",
+                "under",
+                "up",
+                "upon",
+                "via",
+                "with",
+                "yet"
+            ]);
+            const keepUpper=new Set([
+                "op",
+                "mc",
+                "npc",
+                "hp",
+                "mp",
+                "ssr",
+                "sr",
+                "ur",
+                "r",
+                "s",
+                "ss",
+                "sss",
+                "vr",
+                "ar",
+                "mmorpg",
+                "rpg",
+                "pvp",
+                "pve",
+                "ai",
+                "vrmmo",
+                "usa",
+                "uk",
+                "eu",
+                "jp",
+                "kr",
+                "cn",
+                "id"
+            ]);
+            return text
+                .toLowerCase()
+                .split(/\s+/)
+                .map((word,index)=>{
+                    if(keepUpper.has(word)){
+                        return word.toUpperCase();
+                    }
+                    if(
+                        index!==0 &&
+                        keepLower.has(word)
+                    ){
+                        return word;
+                    }
+                    return word.charAt(0).toUpperCase()+word.slice(1);
+                })
+                .join(" ");
+        }
+        document.querySelectorAll(".custom-select").forEach(select=>{
+            const btn=select.querySelector(".select-btn");
+            const menu=select.querySelector(".dropdown-menu");
+            const text=select.querySelector(".select-text");
+            btn.onclick=(e)=>{
+                e.stopPropagation();
+                document.querySelectorAll(".dropdown-menu.open").forEach(m=>{
+                    if(m!==menu){
+                        m.classList.remove("open");
+                        m.parentElement.querySelector(".select-btn").classList.remove("open");
+                    }
+                });
+                menu.classList.toggle("open");
+                btn.classList.toggle("open");
+            };
+            menu.querySelectorAll(".dropdown-option").forEach(option=>{
+                option.onclick=()=>{
+                    text.textContent=option.dataset.value;
+                    menu.classList.remove("open");
+                    btn.classList.remove("open");
+                    select.dataset.value=option.dataset.value;
+                    if(select===statusSelect){
+                        const finished=
+                            option.dataset.value==="Completed" ||
+                            option.dataset.value==="Dropped";
+                        chapterLabel.textContent=
+                            finished
+                                ? "Last Chapter Number"
+                                : "Latest Chapter Number";
+                        chapterInput.placeholder=
+                            finished
+                                ? "Last Chapter Number"
+                                : "Latest Chapter Number";
+                    }
+                };
+            });
+        });
+        epubInput.onchange=()=>{
+            if(!epubInput.files.length){
+                epubTitle.textContent="Import EPUB";
+                epubFileName.textContent="No EPUB Selected";
+                return;
+            }
+            epubTitle.textContent="Imported EPUB";
+            epubFileName.textContent=epubInput.files[0].name;
+        };
+        const metadata=JSON.parse(localStorage.getItem("metadata")||"{}");
+        const browse=metadata.browse||{};
+        const authors=[
+            ...new Set(
+                Object.values(browse)
+                    .map(book=>book.authorName)
+                    .filter(Boolean)
+            )
+        ].sort();
+        const genreSuggestions=[
+            ...new Set(
+                Object.values(browse)
+                    .flatMap(book=>[
+                        book.mainGenre,
+                        ...(book.genres||[])
+                    ])
+                    .filter(Boolean)
+                    .map(titleCase)
+            )
+        ].sort();
+        const tagSuggestions=[
+            ...new Set(
+                Object.values(browse)
+                    .flatMap(book=>book.tags || [])
+                    .filter(Boolean)
+                    .map(titleCase)
+            )
+        ].sort();
+        function renderAuthors(search=""){
+            const s=search.trim().toLowerCase();
+            const matches=authors.filter(author=>
+                author.toLowerCase().includes(s)
+            );
+            authorDropdown.innerHTML=matches
+                .map(author=>`
+                    <div
+                        class="author-option"
+                        data-author="${author}">
+                        ${author}
+                    </div>
+                `)
+                .join("");
+            authorIndex=-1;
+            const opened = matches.length > 0;
+            authorDropdown.classList.toggle("open", opened);
+            authorInput.parentElement.classList.toggle("open", opened);
+            authorDropdown
+                .querySelectorAll(".author-option")
+                .forEach(option=>{
+                    option.onclick=()=>{
+                        authorInput.value=option.dataset.author;
+                        authorDropdown.classList.remove("open");
+                        authorInput.parentElement.classList.remove("open");
+                    };
+                });
+        }
+        authorInput.addEventListener("focus",()=>{
+            renderAuthors(authorInput.value);
+        });
+        authorInput.addEventListener("input",()=>{
+            authorIndex=-1;
+            renderAuthors(authorInput.value);
+        });
+        authorInput.addEventListener("keydown",e=>{
+            const options=[
+                ...authorDropdown.querySelectorAll(".author-option")
+            ];
+            if(!options.length)
+                return;
+            if(e.key==="ArrowDown"){
+                e.preventDefault();
+                authorIndex=Math.min(
+                    authorIndex+1,
+                    options.length-1
+                );
+            }
+            else if(e.key==="ArrowUp"){
+                e.preventDefault();
+                authorIndex=Math.max(
+                    authorIndex-1,
+                    0
+                );
+            }
+            else if(e.key==="Enter"){
+                if(authorIndex>=0){
+                    e.preventDefault();
+                    options[authorIndex].click();
+                }
+                return;
+            }
+            options.forEach(o=>o.style.background="");
+            options[authorIndex].style.background=
+                "rgba(215,181,109,.18)";
+            options[authorIndex].scrollIntoView({
+                block:"nearest"
+            });
+        });
+        function renderAlternateTitles(){
+            alternateContainer
+                .querySelectorAll(".alt-chip")
+                .forEach(e=>e.remove());
+            alternateTitles.forEach((title,index)=>{
+                const chip=document.createElement("div");
+                chip.className="alt-chip";
+                chip.innerHTML=`
+                    <span>${title}</span>
+                    <button type="button">✕</button>
+                `;
+                chip.querySelector("button").onclick=()=>{
+                    alternateTitles.splice(index,1);
+                    renderAlternateTitles();
+                };
+                alternateContainer.insertBefore(
+                    chip,
+                    alternateInput
+                );
+            });
+        }
+        alternateInput.addEventListener("keydown",e=>{
+            if(
+                e.key==="Enter"
+                ||
+                e.key===","
+            ){
+                e.preventDefault();
+                const value=alternateInput.value.trim();
+                if(
+                    value
+                    &&
+                    !alternateTitles.includes(value)
+                ){
+                    alternateTitles.push(value);
+                    renderAlternateTitles();
+                }
+                alternateInput.value="";
+            }
+        });
+        genreInput.addEventListener("focus",()=>{
+            renderGenreDropdown(
+                genreInput.value
+            );
+        });
+        genreInput.addEventListener("input",()=>{
+            renderGenreDropdown(
+                genreInput.value
+            );
+        });
+        genreInput.addEventListener("keydown",e=>{
+            const options=[
+                ...genreDropdown.querySelectorAll(".genre-option")
+            ];
+            if(e.key==="ArrowDown"){
+                e.preventDefault();
+                genreIndex=Math.min(
+                    genreIndex+1,
+                    options.length-1
+                );
+                options.forEach(o=>o.style.background="");
+                if(options[genreIndex]){
+                    options[genreIndex].style.background=
+                        "rgba(215,181,109,.18)";
+                    options[genreIndex].scrollIntoView({
+                        block:"nearest"
+                    });
+                }
+                return;
+            }
+            if(e.key==="ArrowUp"){
+                e.preventDefault();
+                genreIndex=Math.max(
+                    genreIndex-1,
+                    0
+                );
+                options.forEach(o=>o.style.background="");
+                if(options[genreIndex]){
+                    options[genreIndex].style.background=
+                        "rgba(215,181,109,.18)";
+                    options[genreIndex].scrollIntoView({
+                        block:"nearest"
+                    });
+                }
+                return;
+            }
+            if(
+                e.key==="Enter"
+                &&
+                genreIndex>=0
+            ){
+                e.preventDefault();
+                options[genreIndex].click();
+                return;
+            }
+            if(
+                e.key==="Enter"
+                ||
+                e.key===","
+            ){
+                e.preventDefault();
+                const value=titleCase(genreInput.value.trim().slice(0,30));
+                if(
+                    value && !selectedGenres.includes(value) && selectedGenres.length<5
+                ){
+                    selectedGenres.push(value);
+                    renderGenres();
+                }
+                genreInput.value="";
+                renderGenreDropdown();
+                genreInput.value="";
+                renderGenreDropdown();
+                genreDropdown.classList.remove("open");
+                genreContainer
+                    .closest(".author-field")
+                    .classList.remove("open");
+            }
+        });
+        tagInput.addEventListener("focus",()=>{
+            renderTagDropdown(tagInput.value);
+        });
+        tagInput.addEventListener("input",()=>{
+            renderTagDropdown(tagInput.value);
+        });
+        tagInput.addEventListener("keydown",e=>{
+            const options=[
+                ...tagDropdown.querySelectorAll(".genre-option")
+            ];
+            if(e.key==="ArrowDown"){
+                e.preventDefault();
+                tagIndex=Math.min(
+                    tagIndex+1,
+                    options.length-1
+                );
+                options.forEach(o=>o.style.background="");
+                if(options[tagIndex]){
+                    options[tagIndex].style.background=
+                        "rgba(215,181,109,.18)";
+                    options[tagIndex].scrollIntoView({
+                        block:"nearest"
+                    });
+                }
+                return;
+            }
+            if(e.key==="ArrowUp"){
+                e.preventDefault();
+                tagIndex=Math.max(
+                    tagIndex-1,
+                    0
+                );
+                options.forEach(o=>o.style.background="");
+                if(options[tagIndex]){
+                    options[tagIndex].style.background=
+                        "rgba(215,181,109,.18)";
+                    options[tagIndex].scrollIntoView({
+                        block:"nearest"
+                    });
+                }
+                return;
+            }
+            if(
+                e.key==="Enter"
+                &&
+                tagIndex>=0
+            ){
+                e.preventDefault();
+                options[tagIndex].click();
+                return;
+            }
+            if(
+                e.key==="Enter"
+                ||
+                e.key===","
+            ){
+                e.preventDefault();
+                const value=titleCase(
+                    tagInput.value
+                        .trim()
+                        .slice(0,30)
+                );
+                if(
+                    value
+                    &&
+                    !selectedTags.includes(value)
+                    &&
+                    selectedTags.length<25
+                ){
+                    selectedTags.push(value);
+                    renderTags();
+                }
+                tagInput.value="";
+                renderTagDropdown();
+                tagDropdown.classList.remove("open");
+                tagContainer
+                    .closest(".author-field")
+                    .classList.remove("open");
+            }
+        });
+        function renderGenres(){
+            genreContainer
+                .querySelectorAll(".genre-chip")
+                .forEach(e=>e.remove());
+            selectedGenres.forEach((genre,index)=>{
+                const chip=document.createElement("div");
+                chip.className=
+                    index===0
+                    ? "genre-chip main"
+                    : "genre-chip secondary";
+                chip.innerHTML=`
+                    <span>${genre}</span>
+                    <button type="button">✕</button>
+                `;
+                chip.querySelector("button").onclick=()=>{
+                    selectedGenres.splice(index,1);
+                    renderGenres();
+                    renderGenreDropdown(
+                        genreInput.value
+                    );
+                    genreInput.focus();
+                };
+                genreContainer.insertBefore(
+                    chip,
+                    genreInput
+                );
+            });
+            genreInput.disabled = selectedGenres.length >= 5;
+        }
+        function renderGenreDropdown(search=""){
+            const s=search.toLowerCase();
+            const matches = genreSuggestions.filter(g=>
+                g.toLowerCase().includes(s)
+                &&
+                !selectedGenres.includes(g)
+            );
+            genreDropdown.innerHTML=matches.map(g=>`
+                <div
+                    class="genre-option"
+                    data-genre="${g}">
+                    ${g}
+                </div>
+            `).join("");
+            genreIndex=-1;
+            const opened = matches.length > 0;
+            genreDropdown.classList.toggle(
+                "open",
+                opened
+            );
+            genreContainer
+                .closest(".author-field")
+                .classList.toggle(
+                    "open",
+                    opened
+                );
+            genreDropdown
+                .querySelectorAll(".genre-option")
+                .forEach(option=>{
+                    option.onclick=()=>{
+                        if(selectedGenres.length>=5)
+                            return;
+                        selectedGenres.push(
+                            titleCase(option.dataset.genre)
+                        );
+                        genreInput.value="";
+                        renderGenres();
+                        renderGenreDropdown();
+                        genreDropdown.classList.remove("open");
+                        genreContainer
+                            .closest(".author-field")
+                            .classList.remove("open");
+                        genreInput.blur();
+                    };
+                });
+        }
+        function renderTags(){
+            tagContainer
+                .querySelectorAll(".tag-chip")
+                .forEach(e=>e.remove());
+            selectedTags.forEach((tag,index)=>{
+                const chip=document.createElement("div");
+                chip.className="tag-chip";
+                chip.innerHTML=`
+                    <span>${tag}</span>
+                    <button type="button">✕</button>
+                `;
+                chip.querySelector("button").onclick=()=>{
+                    selectedTags.splice(index,1);
+                    renderTags();
+                    renderTagDropdown(tagInput.value);
+                    tagInput.focus();
+                };
+                tagContainer.insertBefore(
+                    chip,
+                    tagInput
+                );
+            });
+            tagInput.disabled=selectedTags.length>=25;
+        }
+        function renderTagDropdown(search=""){
+            const s=search.toLowerCase();
+            const matches=tagSuggestions.filter(tag=>
+                tag.toLowerCase().includes(s)
+                &&
+                !selectedTags.includes(tag)
+            );
+            tagDropdown.innerHTML=matches.map(tag=>`
+                <div
+                    class="genre-option"
+                    data-tag="${tag}">
+                    ${tag}
+                </div>
+            `).join("");
+            tagIndex=-1;
+            const opened=matches.length>0;
+            tagDropdown.classList.toggle("open",opened);
+            tagContainer
+                .closest(".author-field")
+                .classList.toggle("open",opened);
+            tagDropdown
+                .querySelectorAll(".genre-option")
+                .forEach(option=>{
+                    option.onclick=()=>{
+                        if(selectedTags.length>=25)
+                            return;
+                        selectedTags.push(
+                            titleCase(option.dataset.tag)
+                        );
+                        tagInput.value="";
+                        renderTags();
+                        renderTagDropdown();
+                        tagDropdown.classList.remove("open");
+                        tagContainer
+                            .closest(".author-field")
+                            .classList.remove("open");
+                        tagInput.blur();
+                    };
+                });
+        }
+        chapterInput.addEventListener("input",()=>{
+            chapterInput.value=chapterInput.value
+                .replace(/\D/g,"")
+                .slice(0,5);
+        });
+        document.querySelectorAll(".auto-grow").forEach(textarea=>{
+            const resize=()=>{
+                textarea.style.height="0px";
+                textarea.style.height=textarea.scrollHeight+"px";
+            };
+            resize();
+            textarea.addEventListener("input",resize);
+        });
+        const description=document.getElementById("description");
+        const descriptionCount=document.getElementById("descriptionCount");
+        const descriptionCounter=document.querySelector(".description-counter");
+        function updateDescriptionCounter(){
+            const length=description.value.length;
+            descriptionCount.textContent=length;
+            descriptionCounter.classList.remove(
+                "warning",
+                "danger"
+            );
+            if(length>=7000){
+                descriptionCounter.classList.add("warning");
+            }
+            if(length>=7800){
+                descriptionCounter.classList.remove("warning");
+                descriptionCounter.classList.add("danger");
+            }
+        }
+        description.addEventListener("input", updateDescriptionCounter);
+        description.addEventListener("keydown",e=>{
+            if(
+                description.value.length>=description.maxLength &&
+                e.key.length===1 &&
+                !e.ctrlKey &&
+                !e.metaKey &&
+                !e.altKey
+            ){
+                descriptionCounter.classList.remove("flash");
+                void descriptionCounter.offsetWidth;
+                descriptionCounter.classList.add("flash");
+            }
+        });
+        updateDescriptionCounter();
+        coverInput.onchange=()=>{
+            if(!coverInput.files.length)
+                return;
+            const file=coverInput.files[0];
+            cropImage.src=URL.createObjectURL(file);
+            cropModal.classList.remove("hidden");
+            cropImage.onload=()=>{
+                cropper?.destroy();
+                cropper=new Cropper(cropImage,{
+                    aspectRatio:3/4,
+                    viewMode:1,
+                    dragMode:"move",
+                    autoCropArea:1,
+                    movable:true,
+                    zoomable:true,
+                    scalable:false,
+                    rotatable:false,
+                    guides:true,
+                    center:true,
+                    background:false,
+                    responsive:true,
+                    touchDragZoom:true
+                });
+            };
+        };
+        cropCancel.onclick=()=>{
+            cropper?.destroy();
+            cropper = null;
+            cropModal.classList.add("hidden");
+            croppedCoverFile = null;
+            coverInput.value = "";
+        };
+        cropConfirm.onclick=()=>{
+            if(!cropper){
+                showError(
+                    "Cover Error",
+                    "Please crop the cover before continuing."
+                );
+                return;
+            }
+            const canvas=cropper.getCroppedCanvas({
+                width:900,
+                height:1200,
+                imageSmoothingQuality:"high"
+            });
+            if(!canvas){
+                showError(
+                    "Cover Error",
+                    "Unable to crop the selected cover image."
+                );
+                return;
+            }
+            canvas.toBlob(blob=>{
+                if(!blob){
+                    showError(
+                        "Cover Error",
+                        "Unable to process the cropped cover image."
+                    );
+                    return;
+                }
+                croppedCoverFile = new File(
+                    [blob],
+                    "cover.jpg",
+                    {
+                        type:"image/jpeg"
+                    }
+                );
+                const previewURL = URL.createObjectURL(blob);
+                coverContent.innerHTML = `
+                    <img
+                        src="${previewURL}"
+                        style="
+                            width:100%;
+                            height:100%;
+                            object-fit:cover;
+                            border-radius:24px;
+                        ">
+                `;
+                cropModal.classList.add("hidden");
+                cropper.destroy();
+                cropper = null;
+            },"image/jpeg",0.92);
+        };
+        document.addEventListener("click",e=>{
+            if(
+                !authorInput.contains(e.target)
+                &&
+                !authorDropdown.contains(e.target)
+            ){
+                authorDropdown.classList.remove("open");
+                authorInput.parentElement.classList.remove("open");
+            }
+        });
+        document.addEventListener("click",(e)=>{
+            if(
+                !genreContainer.contains(e.target)
+                &&
+                !genreDropdown.contains(e.target)
+            ){
+                genreDropdown.classList.remove("open");
+
+                genreContainer
+                    .closest(".author-field")
+                    .classList.remove("open");
+            }
+        });
+        document.addEventListener("click",(e)=>{
+            if(
+                !tagContainer.contains(e.target)
+                &&
+                !tagDropdown.contains(e.target)
+            ){
+                tagDropdown.classList.remove("open");
+                tagContainer
+                    .closest(".author-field")
+                    .classList.remove("open");
+            }
+        });
+        function showError(title,message){
+            document.getElementById("errorTitle").textContent=title;
+            document.getElementById("errorMessage").textContent=message;
+            document.getElementById("errorModal").classList.remove("hidden");
+        }
+        document
+        .getElementById("closeErrorModal")
+        .onclick=()=>{
+            document
+                .getElementById("errorModal")
+                .classList.add("hidden");
+        };
+        function validateUpload(){
+            const bookName=document
+                .getElementById("bookName")
+                .value
+                .trim();
+            const chapterNumber=parseInt(
+                chapterInput.value.trim(),
+                10
+            );
+
+            if(!croppedCoverFile){
+                showError(
+                    "Missing Cover",
+                    "Please upload and crop a book cover"
+                );
+                return false;
+            }
+            if(!epubInput.files.length){
+                showError(
+                    "Missing EPUB",
+                    "Please select an EPUB file"
+                );
+                return false;
+            }
+            if(
+                !document
+                    .getElementById("bookName")
+                    .value
+                    .trim()
+            ){
+                showError(
+                    "Missing Book Name",
+                    "Please enter the book name"
+                );
+                return false;
+            }
+            if(
+                !authorInput.value.trim()
+            ){
+                showError(
+                    "Missing Author",
+                    "Please enter the author's name"
+                );
+                return false;
+            }
+            if(
+                !chapterInput.value.trim()
+            ){
+                showError(
+                    "Missing Chapter Number",
+                    "Please enter the latest or last chapter number"
+                );
+                return false;
+            }
+            if(
+                !document.querySelector("#originBtn")
+                    .closest(".custom-select")
+                    .dataset.value
+            ){
+                showError(
+                    "Missing Origin",
+                    "Please select the book's origin"
+                );
+                return false;
+            }
+            if(
+                !document.querySelector("#categoryBtn")
+                    .closest(".custom-select")
+                    .dataset.value
+            ){
+                showError(
+                    "Missing Category",
+                    "Please select a category"
+                );
+                return false;
+            }
+            if(
+                !document.querySelector("#statusBtn")
+                    .closest(".custom-select")
+                    .dataset.value
+            ){
+                showError(
+                    "Missing Status",
+                    "Please select the book status"
+                );
+                return false;
+            }
+            if(
+                !document.querySelector("#languageBtn")
+                    .closest(".custom-select")
+                    .dataset.value
+            ){
+                showError(
+                    "Missing Language",
+                    "Please select a language"
+                );
+                return false;
+            }
+            if(selectedGenres.length===0){
+                showError(
+                    "Missing Genre",
+                    "Please add at least one genre"
+                );
+                return false;
+            }
+            if(selectedTags.length===0){
+                showError(
+                    "Missing Tag",
+                    "Please add at least one tag"
+                );
+                return false;
+            }
+            const description=document
+                .getElementById("description")
+                .value
+                .trim();
+            if(description.length<10){
+                showError(
+                    "Description Too Short",
+                    "Description must contain at least 10 characters"
+                );
+                return false;
+            }
+            if(!Number.isInteger(chapterNumber) || chapterNumber<=0){
+                showError(
+                    "Invalid Chapter Number",
+                    "Chapter number must be greater than zero"
+                );
+                return false;
+            }
+            if(bookName.length>200){
+                showError(
+                    "Book Name Too Long",
+                    "Book name cannot exceed 200 characters"
+                );
+                return false;
+            }
+            if(authorInput.value.trim().length>100){
+                showError(
+                    "Author Name Too Long",
+                    "Author name cannot exceed 100 characters"
+                );
+                return false;
+            }
+            return true;
+        }
+        function createBookId(name){
+            return name
+                .normalize("NFKD")
+                .replace(/[\u0300-\u036f]/g,"")
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g,"");
+        }
+        const uploadBookBtn=document.getElementById("uploadBookBtn");
+        uploadBookBtn.onclick=async()=>{
+            if(!validateUpload()){
+                return;
+            }
+            const user=auth.currentUser;
+            if(!user){
+                showError(
+                    "Not Logged In",
+                    "Please sign in again before uploading."
+                );
+                return;
+            }
+            const coverFile = croppedCoverFile;
+            const epubFile = epubInput.files[0];
+            if(!coverFile || !epubFile){
+                showError(
+                    "Missing Files",
+                    "Cover and EPUB are required."
+                );
+                return;
+            }
+            const bookName=document.getElementById("bookName").value.trim();
+            const authorName=document.getElementById("authorName").value.trim();
+            const category=document.querySelector("#categoryBtn")
+                .closest(".custom-select")
+                .dataset.value || "";
+            const language=document.querySelector("#languageBtn")
+                .closest(".custom-select")
+                .dataset.value || "";
+            const origin=document.querySelector("#originBtn")
+                .closest(".custom-select")
+                .dataset.value || "";
+            const status=document.querySelector("#statusBtn")
+                .closest(".custom-select")
+                .dataset.value || "";
+            const chapterNumber=parseInt(
+                chapterInput.value || "0",
+                10
+            );
+            const description=document
+                .getElementById("description")
+                .value
+                .trim();
+            const now=Date.now();
+            const formData=new FormData();
             formData.append(
                 "cover",
-                upload.coverFile
+                coverFile,
+                coverFile.name
             );
             formData.append(
                 "epub",
-                upload.epubFile
+                epubFile,
+                epubFile.name
             );
             formData.append(
-                "metadata",
-                JSON.stringify({
-                    bookId: upload.bookId,
-                    bookName: upload.bookName,
-                    authorName: upload.authorName,
-                    chapterNumber: upload.chapterNumber,
-                    language: upload.language,
-                    category: upload.category,
-                    status: upload.status,
-                    mainGenre: upload.mainGenre,
-                    genres: upload.genres,
-                    alternateTitles: upload.alternateTitles,
-                    tags: upload.tags,
-                    description: upload.description
-                })
+                "bookId",
+                createBookId(bookName)
             );
-            setUploadStatus("Uploading EPUB...");
-            const user = auth.currentUser;
-            if (!user) {
-                throw new Error("You are not signed in.");
-            }
-            const token = await auth.currentUser.getIdToken();
-            const response = await fetch(
-                "https://immortal-library-backend.onrender.com/upload",
-                {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                    body: formData
-                }
+            formData.append(
+                "bookName",
+                bookName
             );
-            const result = await response.json();
-            if(!response.ok){
-                throw new Error(
-                    result.error || "Upload failed."
+            formData.append(
+                "authorName",
+                authorName
+            );
+            formData.append(
+                "category",
+                category
+            );
+            formData.append(
+                "chapterNumber",
+                chapterNumber
+            );
+            formData.append(
+                "description",
+                description
+            );
+            formData.append(
+                "downloads",
+                0
+            );
+            formData.append(
+                "views",
+                0
+            );
+            formData.append(
+                "mainGenre",
+                selectedGenres[0] || ""
+            );
+            formData.append(
+                "genres",
+                JSON.stringify(selectedGenres.slice(1))
+            );
+            formData.append(
+                "alternateTitles",
+                JSON.stringify(alternateTitles)
+            );
+            formData.append(
+                "language",
+                language
+            );
+            formData.append(
+                "origin",
+                origin
+            );
+            formData.append(
+                "status",
+                status
+            );
+            formData.append(
+                "tags",
+                JSON.stringify(selectedTags)
+            );
+            formData.append(
+                "createdAt",
+                now
+            );
+            formData.append(
+                "updatedAt",
+                now
+            );
+            formData.append(
+                "uploaderUid",
+                user.uid
+            );
+            setUploadButtonLoading();
+            try{
+                const token = await user.getIdToken();
+                const response=await fetch(
+                    "https://immortal-library-backend.onrender.com/upload-epub",
+                    {
+                        method:"POST",
+                        headers:{
+                            Authorization:`Bearer ${token}`
+                        },
+                        body:formData
+                    }
                 );
-            }
-            setUploadStatus("Saving Metadata...");
-            await setDoc(
-                doc(
-                    db,
-                    "epubs",
-                    upload.bookId
-                ),
-                {
-                    uploaderUid: auth.currentUser.uid,
-                    bookId: upload.bookId,
-                    bookName: upload.bookName,
-                    authorName: upload.authorName,
-                    chapterNumber: upload.chapterNumber,
-                    language: upload.language,
-                    category: upload.category,
-                    status: upload.status,
-                    mainGenre: upload.mainGenre,
-                    genres: upload.genres,
-                    alternateTitles: upload.alternateTitles,
-                    tags: upload.tags,
-                    description: upload.description,
-                    coverUrl: result.coverUrl,
-                    epubUrl: result.epub.viewUrl,
-                    epubDownloadUrl: result.epub.downloadUrl,
-                    views: 0,
-                    downloads: 0,
-                    featuredPosition: null,
-                    createdAt: serverTimestamp(),
-                    updatedAt: serverTimestamp()
+                const result=await response.json().catch(()=>({
+                    success:false,
+                    message:"Invalid server response."
+                }));
+                if(response.ok && result.success){
+                    setUploadButtonSuccess();
+                    await new Promise(resolve=>setTimeout(resolve,2000));
+                    errorTitle.style.color="var(--gold)";
+                    errorTitle.textContent="Upload Complete";
+                    errorMessage.textContent=result.message;
+                    errorModal.classList.remove("hidden");
+                    resetUploadButton();
+                }else{
+                    resetUploadButton();
+                    errorTitle.style.color="#ff6868";
+                    errorTitle.textContent="Upload Failed";
+                    errorMessage.textContent=
+                        result.message || "Upload failed.";
+                    errorModal.classList.remove("hidden");
                 }
-            );
-            finishUpload();
-            resetUploadForm();
-        }
-        catch(err){
-            console.error(err);
-            console.error(err.code);
-            console.error(err.message);
-            console.error(err.stack);
-            showError(
-                "Upload Failed",
-                `${err.code}\n${err.message}`
-            );
-            resetUpload();
+            }catch(err){
+                console.error(err);
+                resetUploadButton();
+                errorTitle.style.color="#ff6868";
+                errorTitle.textContent="Upload Failed";
+                errorMessage.textContent=
+                    err.message || "Unexpected error.";
+                errorModal.classList.remove("hidden");
+            }
+        };
+    }
+   
+    document.addEventListener("click",()=>{
+        document.querySelectorAll(".dropdown-menu").forEach(menu=>{
+            menu.classList.remove("open");
+        });
+        document.querySelectorAll(".select-btn").forEach(btn=>{
+            btn.classList.remove("open");
+        });
+    });
+
+    mobileLayout();
+    window.addEventListener("resize",mobileLayout);
+
+    mobileHome.onclick=()=>{
+        window.location.href="/index";
+    };
+
+    closeSidebar.onclick=()=>{
+        sidebar.classList.remove("open");
+    };
+
+    menuBtn.onclick=()=>{
+        if(window.innerWidth<=900){
+            sidebar.classList.toggle("open");
+        }else{
+            window.location.href="/index";
         }
     };
 
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<script src="./src/copper.min.js"></script>
+
 </body>
 </html>

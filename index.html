@@ -2846,6 +2846,11 @@
             loginInProgress=true;
             googleBtn.disabled=true;
             try{
+                await setPersistence(
+                    auth,
+                    browserLocalPersistence
+                );
+                const result=await signInWithPopup(auth,provider);
                 const user=result.user;
                 const email=user.email.toLowerCase();
                 const adminDoc=await getDoc(doc(db,"admins",email));
@@ -2858,11 +2863,6 @@
                     await signOut(auth);
                     return;
                 }
-                await setPersistence(
-                    auth,
-                    browserLocalPersistence
-                );
-                const result=await signInWithPopup(auth,provider);
                 modal.classList.add("hidden");
             }
             catch(err){
