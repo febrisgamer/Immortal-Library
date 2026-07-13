@@ -27,7 +27,6 @@
         --text:#ececec;
         --muted:#aaaaaa;
         --border:rgba(255,255,255,.08);
-        --main-bg-image:none;
         --featured-card-width:clamp(125px, 12vw, 185px);
         --featured-gap:clamp(12px, 1.8vw, 28px);
     }
@@ -834,12 +833,11 @@
         padding-bottom:30px;
     }
 
-    main::before{
-        content:"";
+    .main-bg-layer{
         position:absolute;
         inset:0;
         z-index:-2;
-        background-image:var(--main-bg-image);
+        background-image:none;
         background-repeat:no-repeat;
         background-position:center center;
         background-size:cover;
@@ -849,6 +847,14 @@
             brightness(2)
             saturate(1.1)
             contrast(1.05);
+        opacity:0;
+        transition:opacity .42s ease;
+        will-change:opacity;
+        pointer-events:none;
+    }
+
+    .main-bg-layer.visible{
+        opacity:1;
     }
 
     main::after{
@@ -2498,6 +2504,8 @@
 
     <main>
 
+        <div class="main-bg-layer main-bg-layer-a visible"></div>
+        <div class="main-bg-layer main-bg-layer-b"></div>
         <div class="grain"></div>
 
         <div class="main-header">
@@ -2680,6 +2688,7 @@
         const menuRole=document.getElementById("menuRole");
         const profilePageBtn=document.getElementById("profilePageBtn");
         const logoutBtn=document.getElementById("logoutBtn");
+        const mainElement = document.querySelector("main");
         const bookTrack = document.getElementById("bookTrack");
         const viewport = document.querySelector(".carousel-viewport");
         const hallGrid = document.getElementById("hallGrid");
@@ -2688,6 +2697,9 @@
         const hallNext = document.getElementById("hallNext");
         const editorPrev = document.getElementById("editorPrev");
         const editorNext = document.getElementById("editorNext");
+        const mainBgLayers = [
+            ...mainElement.querySelectorAll(".main-bg-layer")
+        ];
 
         let hallBooks = [];
         let ignoreScrollUntil = 0;
@@ -2695,6 +2707,10 @@
         const HALL_PER_PAGE = 8;
         let browseBooks = [];
         let metadata = null;
+        let visibleMainBgLayerIndex = 0;
+        let currentMainBgUrl = "";
+        let mainBgRequestToken = 0;
+        const mainBgPreloadCache = new Map();
 
         const searchResults=document.createElement("div");
 
@@ -3652,6 +3668,33 @@
             });
         }
 
+        function preloadMainBackground(url){
+            if(!url){
+                return Promise.reject(new Error("Missing background URL"));
+            }
+            if(mainBgPreloadCache.has(url)){
+                return mainBgPreloadCache.get(url);
+            }
+            const promise = new Promise((resolve,reject)=>{
+                const image = new Image();
+                image.decoding = "async";
+                image.onload = ()=>{
+                    if(typeof image.decode === "function"){
+                        image.decode().catch(()=>{}).finally(resolve);
+                        return;
+                    }
+                    resolve();
+                };
+                image.onerror = ()=>{
+                    mainBgPreloadCache.delete(url);
+                    reject(new Error(`Failed to load background: ${url}`));
+                };
+                image.src = url;
+            });
+            mainBgPreloadCache.set(url,promise);
+            return promise;
+        }
+
         function updateMainBackground(bookIndex = activeIndex){
             if(books.length === 0){
                 return;
@@ -3660,10 +3703,28 @@
             if(!cover){
                 return;
             }
-            document.documentElement.style.setProperty(
-                "--main-bg-image",
-                `url("${cover}")`
-            );
+            if(cover === currentMainBgUrl){
+                return;
+            }
+            const token = ++mainBgRequestToken;
+            preloadMainBackground(cover)
+                .then(()=>{
+                    if(token !== mainBgRequestToken){
+                        return;
+                    }
+                    const nextLayerIndex = visibleMainBgLayerIndex === 0 ? 1 : 0;
+                    const nextLayer = mainBgLayers[nextLayerIndex];
+                    const currentLayer = mainBgLayers[visibleMainBgLayerIndex];
+                    if(!nextLayer || !currentLayer){
+                        return;
+                    }
+                    nextLayer.style.backgroundImage = `url("${cover}")`;
+                    nextLayer.classList.add("visible");
+                    currentLayer.classList.remove("visible");
+                    visibleMainBgLayerIndex = nextLayerIndex;
+                    currentMainBgUrl = cover;
+                })
+                .catch(()=>{});
         }
         
         function updateCarousel(){
