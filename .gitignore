@@ -47,5 +47,5 @@ zdcserver.html
 # =========================
 # Ignore personal folders
 # =========================
-
+dist/
 EXPERIMENTAL/
