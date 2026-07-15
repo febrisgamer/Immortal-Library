@@ -839,6 +839,20 @@
         flex-shrink:0;
     }
 
+    .contributor-avatar-wrapper{
+        width:52px;
+        height:52px;
+        flex-shrink:0;
+        position:relative;
+        overflow:visible;
+    }
+
+    .contributor-decoration{
+        display:none;
+        width:120%;
+        height:120%;
+    }
+    
     .contributor-name{
         color:#ececec;
         font-weight:600;
@@ -1164,6 +1178,14 @@
         .contributor-avatar{
             width:46px;
             height:46px;
+        }
+        .contributor-avatar-wrapper{
+            width:46px;
+            height:46px;
+        }
+        .contributor-decoration{
+            width:115%;
+            height:115%;
         }
         .contributor-name{
             font-size:15px;
@@ -1542,7 +1564,10 @@
                 <a
                     href="/profile?uid=H8W7QZ61jtaXbdubMa3Veccg4j92"
                     style=" display:flex; align-items:center; gap:14px; flex:1; text-decoration:none; min-width:0;">
-                    <img id="topContributorAvatar" class="contributor-avatar" src="assets/d.png" alt="Top Contributor">
+                    <div class="profile-avatar-wrapper contributor-avatar-wrapper">
+                        <img id="topContributorAvatar" class="contributor-avatar" src="assets/d.png" alt="Top Contributor">
+                        <img id="topContributorDecoration" class="avatar-decoration contributor-decoration" src="">
+                    </div>
                     <div style="min-width:0;">
                         <div id="topContributorName" class="contributor-name" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Loading...</div>
                         <div class="contributor-role">Lead Developer</div>
@@ -1554,7 +1579,10 @@
                 <a
                     href="/profile?uid=33fy5mMi9FhVnXlqI9cwpae6ka62"
                     style="display:flex; align-items:center; gap:14px; flex:1; text-decoration:none; min-width:0;">
-                    <img id="herMajestyAvatar" class="contributor-avatar" src="assets/d.png" alt="Her Majesty">
+                    <div class="profile-avatar-wrapper contributor-avatar-wrapper">
+                        <img id="herMajestyAvatar" class="contributor-avatar" src="assets/d.png" alt="Her Majesty">
+                        <img id="herMajestyDecoration" class="avatar-decoration contributor-decoration" src="">
+                    </div>
                     <div style="min-width:0;">
                         <div id="herMajestyName" class="contributor-name" style=" white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Loading...</div>
                         <div class="contributor-role">Her Majesty</div>
@@ -1590,7 +1618,10 @@
                 <a
                     href="/profile?uid=ag0zsbarEDWqG0lceG3JJvql6PC2"
                     style="display:flex; align-items:center; gap:14px; flex:1; text-decoration:none; min-width:0;">
-                    <img id="namelessAvatar" class="contributor-avatar" src="assets/d.png" alt="Nameless Traveller">
+                    <div class="profile-avatar-wrapper contributor-avatar-wrapper">
+                        <img id="namelessAvatar" class="contributor-avatar" src="assets/d.png" alt="Nameless Traveller">
+                        <img id="namelessDecoration" class="avatar-decoration contributor-decoration" src="">
+                    </div>
                     <div style="min-width:0;">
                         <div id="namelessName" class="contributor-name" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Loading...</div>
                         <div class="contributor-role">Administrator</div>
@@ -1730,11 +1761,13 @@
         {
             uid: "H8W7QZ61jtaXbdubMa3Veccg4j92",
             avatar: "topContributorAvatar",
+            decoration: "topContributorDecoration",
             name: "topContributorName"
         },
         {
             uid: "33fy5mMi9FhVnXlqI9cwpae6ka62",
             avatar: "herMajestyAvatar",
+            decoration: "herMajestyDecoration",
             name: "herMajestyName"
         },
         {
@@ -1750,6 +1783,7 @@
         {
             uid: "ag0zsbarEDWqG0lceG3JJvql6PC2",
             avatar: "namelessAvatar",
+            decoration: "namelessDecoration",
             name: "namelessName"
         }
     ];
@@ -1760,13 +1794,19 @@
                 const profileDoc = await getDoc(
                     doc(db, "userdata", contributor.uid)
                 );
-
                 if (!profileDoc.exists()) continue;
-
                 const profile = profileDoc.data();
-
                 document.getElementById(contributor.avatar).src = profile.avatar;
                 document.getElementById(contributor.name).textContent = profile.displayName;
+                if(contributor.decoration){
+                    const decoration = document.getElementById(contributor.decoration);
+                    if(profile.decoration){
+                        decoration.src = profile.decoration;
+                        decoration.style.display = "block";
+                    }else{
+                        decoration.style.display = "none";
+                    }
+                }
             }
             catch (err) {
                 console.error(err);
