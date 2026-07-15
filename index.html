@@ -438,9 +438,8 @@
     .admin-avatar{
         width:100%;
         height:100%;
-        border-radius:50%;
         object-fit:cover;
-        display:block;
+        border-radius:50%;
     }
 
     .profile-btn{
@@ -450,7 +449,7 @@
         border:none;
         background:transparent;
         border-radius:50%;
-        overflow:hidden;
+        overflow:visible;
         display:flex;
         justify-content:center;
         align-items:center;
@@ -460,11 +459,50 @@
 
     .profile-btn:hover{
         transform:translateY(-2px);
-        box-shadow:0 0 24px rgba(215,181,109,.18);
     }
 
     .profile-btn:active{
         transform:scale(.95);
+    }
+
+    .profile-avatar-wrapper,
+    .profile-menu-avatar-wrapper{
+        position:relative;
+        overflow:visible;
+        flex-shrink:0;
+    }
+
+    .profile-avatar-wrapper{
+        width:100%;
+        height:100%;
+    }
+
+    .profile-menu-avatar-wrapper{
+        width:48px;
+        height:48px;
+    }
+
+    .avatar-decoration{
+        position:absolute;
+        top:50%;
+        left:50%;
+        width:120%;
+        height:120%;
+        transform:translate(-50%,-50%);
+        object-fit:contain;
+        pointer-events:none;
+        display:none;
+        z-index:2;
+    }
+
+    .admin-avatar,
+    .profile-menu-avatar{
+        position:relative;
+        width:100%;
+        height:100%;
+        border-radius:50%;
+        object-fit:cover;
+        z-index:1;
     }
 
     #googleLogin:disabled{
@@ -2403,13 +2441,21 @@
                     Filter
                 </a>
             </div>
-            <button id="profileBtn" class="profile-btn hidden"></button>
+            <button id="profileBtn" class="profile-btn hidden">
+                <div class="profile-avatar-wrapper">
+                    <img id="navAvatar" class="admin-avatar">
+                    <img id="navDecoration" class="avatar-decoration" src="">
+                </div>
+            </button>
         </div>
     </nav>
 
     <div id="profileMenu" class="profile-menu hidden">
         <button id="profilePageBtn" class="profile-menu-user">
-            <img id="menuAvatar" class="profile-menu-avatar">
+            <div class="profile-menu-avatar-wrapper">
+                <img id="menuAvatar" class="profile-menu-avatar">
+                <img id="menuDecoration" class="avatar-decoration" src="">
+            </div>
             <div class="profile-menu-info">
                 <div id="menuName" class="profile-menu-name"></div>
                 <div id="menuRole" class="profile-menu-role"></div>
@@ -2697,9 +2743,10 @@
         const hallNext = document.getElementById("hallNext");
         const editorPrev = document.getElementById("editorPrev");
         const editorNext = document.getElementById("editorNext");
-        const mainBgLayers = [
-            ...mainElement.querySelectorAll(".main-bg-layer")
-        ];
+        const mainBgLayers = [...mainElement.querySelectorAll(".main-bg-layer")];
+        const navAvatar = document.getElementById("navAvatar");
+        const navDecoration = document.getElementById("navDecoration");
+        const menuDecoration = document.getElementById("menuDecoration");
 
         let hallBooks = [];
         let ignoreScrollUntil = 0;
@@ -2766,75 +2813,40 @@
         };
 
         async function saveUserData(user){
-            const profileRef = doc(
-                db,
-                "userdata",
-                user.uid
-            );
+            const profileRef = doc(db, "userdata", user.uid);
             const existing = await getDoc(profileRef);
             if(existing.exists()){
                 return existing.data();
             }
-            const displayName = user.displayName ?? "";
-            let username;
-            if(/^[A-Za-z0-9\s]+$/.test(displayName)){
-                username = displayName
-                    .toLowerCase()
-                    .replace(/[^a-z0-9]/g,"");
-                if(username.length===0){
-                    username="user"+Math.floor(
-                        10000000+Math.random()*90000000
-                    );
-                }
-            }
-            else{
-                username="user"+Math.floor(
-                    10000000+Math.random()*90000000
-                );
-            }
-            let avatar=user.photoURL;
-            try{
-                const token=await user.getIdToken();
-                const controller=new AbortController();
-                const timeout=setTimeout(()=>{
-                    controller.abort();
-                },300000); // 5 minutes
-                const response=await fetch(
-                    "https://immortal-library-backend.onrender.com/upload-avatar",
-                    {
-                        method:"POST",
-                        headers:{
-                            Authorization:`Bearer ${token}`,
-                            "Content-Type":"application/json"
-                        },
-                        body:JSON.stringify({
-                            photoURL:user.photoURL,
-                            uid:user.uid
-                        }),
-                        signal:controller.signal
+            const token = await user.getIdToken();
+            const response = await fetch(
+                "https://immortal-library-backend.onrender.com/create-account",
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`
                     }
-                );
-                clearTimeout(timeout);
-                if(response.ok){
-                    const result=await response.json();
-                    if(result.success && result.avatar){
-                        avatar=result.avatar;
-                    }
-                }else{
-                    console.warn("Avatar upload failed:",response.status);
                 }
+            );
+            const result = await response.json();
+            if(!response.ok || !result.success){
+                throw new Error(result.message || "Failed to create account.");
             }
-            catch(err){
-                console.warn("Avatar upload skipped:",err);
+            if(result.exists){
+                const existingAfter = await getDoc(profileRef);
+                if(existingAfter.exists()){
+                    return existingAfter.data();
+                }
+                throw new Error("Account already exists but profile could not be found.");
             }
-            const profile={
-                uid:user.uid,
-                username,
-                displayName,
-                avatar
-            };
-            await setDoc(profileRef,profile);
-            return profile;
+            if(result.profile){
+                return result.profile;
+            }
+            const created = await getDoc(profileRef);
+            if(!created.exists()){
+                throw new Error("Account was created but profile could not be found.");
+            }
+            return created.data();
         }
 
         async function loadBrowse(){
@@ -2846,12 +2858,23 @@
 
         function showLoggedIn(profile,isOwner){
             profileBtn.classList.remove("hidden");
-            profileBtn.innerHTML=`
-                <img src="${profile.avatar}" class="admin-avatar">
-            `;
-            menuAvatar.src=profile.avatar;
-            menuName.textContent=profile.displayName;
-            menuRole.textContent=isOwner ? "Owner" : "Administrator";
+            navAvatar.src = profile.avatar;
+            menuAvatar.src = profile.avatar;
+            if(profile.decoration){
+                navDecoration.src = profile.decoration;
+                navDecoration.style.display = "block";
+
+                menuDecoration.src = profile.decoration;
+                menuDecoration.style.display = "block";
+            }else{
+                navDecoration.removeAttribute("src");
+                navDecoration.style.display = "none";
+
+                menuDecoration.removeAttribute("src");
+                menuDecoration.style.display = "none";
+            }
+            menuName.textContent = profile.displayName;
+            menuRole.textContent = isOwner ? "Owner" : "Administrator";
         }
 
         let loginInProgress=false;
@@ -3061,6 +3084,10 @@
             try{
                 if(!user){
                     profileBtn.classList.add("hidden");
+                    navAvatar.removeAttribute("src");
+                    menuAvatar.removeAttribute("src");
+                    navDecoration.style.display = "none";
+                    menuDecoration.style.display = "none";
                     profileBtn.innerHTML="";
                     profileMenu.classList.add("hidden");
                     panelLogin.textContent="ADMINISTRATOR LOGIN";

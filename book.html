@@ -193,7 +193,7 @@
         padding:0;
         background:transparent;
         border-radius:50%;
-        overflow:hidden;
+        overflow:visible;
         display:flex;
         justify-content:center;
         align-items:center;
@@ -207,6 +207,36 @@
 
     .profile-btn:active{
         transform:scale(.95);
+    }
+
+    .profile-avatar-wrapper,
+    .profile-menu-avatar-wrapper{
+        position:relative;
+        overflow:visible;
+        flex-shrink:0;
+    }
+
+    .profile-avatar-wrapper{
+        width:100%;
+        height:100%;
+    }
+
+    .profile-menu-avatar-wrapper{
+        width:48px;
+        height:48px;
+    }
+
+    .avatar-decoration{
+        position:absolute;
+        top:50%;
+        left:50%;
+        width:120%;
+        height:120%;
+        transform:translate(-50%,-50%);
+        object-fit:contain;
+        pointer-events:none;
+        display:none;
+        z-index:2;
     }
 
     #googleLogin:disabled{
@@ -725,7 +755,7 @@
 
     .book-title-text{
         font-family:Cinzel,serif;
-        font-size:42px;
+        font-size:38px;
         font-weight:750;
         line-height:1.18;
         color:var(--gold);
@@ -1013,13 +1043,21 @@
             </a>
         </div>
         <div class="nav-right">
-            <button id="profileBtn" class="profile-btn hidden"></button>
+            <button id="profileBtn" class="profile-btn hidden">
+                <div class="profile-avatar-wrapper">
+                    <img id="navAvatar" class="admin-avatar">
+                    <img id="navDecoration" class="avatar-decoration" src="">
+                </div>
+            </button>
         </div>
     </nav>
 
     <div id="profileMenu" class="profile-menu hidden">
         <button id="profilePageBtn" class="profile-menu-user">
-            <img id="menuAvatar" class="profile-menu-avatar">
+            <div class="profile-menu-avatar-wrapper">
+                <img id="menuAvatar" class="profile-menu-avatar">
+                <img id="menuDecoration" class="avatar-decoration" src="">
+            </div>
             <div class="profile-menu-info">
                 <div id="menuName" class="profile-menu-name"></div>
                 <div id="menuRole" class="profile-menu-role"></div>
@@ -1094,6 +1132,9 @@
     const profilePageBtn=document.getElementById("profilePageBtn");
     const logoutBtn=document.getElementById("logoutBtn");
     const bookContainer = document.getElementById("bookContainer");
+    const navAvatar=document.getElementById("navAvatar");
+    const navDecoration=document.getElementById("navDecoration");
+    const menuDecoration=document.getElementById("menuDecoration");
 
     if(!bookId){
         window.location.replace("/browse");
@@ -1103,19 +1144,30 @@
 
     function showLoggedIn(profile,isOwner){
         profileBtn.classList.remove("hidden");
-        profileBtn.innerHTML=`
-            <img src="${profile.avatar}" class="admin-avatar">
-        `;
-        menuAvatar.src=profile.avatar;
-        menuName.textContent=profile.displayName;
-        menuRole.textContent=isOwner ? "Owner" : "Administrator";
+        navAvatar.src = profile.avatar;
+        menuAvatar.src = profile.avatar;
+        if(profile.decoration){
+            navDecoration.src = profile.decoration;
+            navDecoration.style.display = "block";
+
+            menuDecoration.src = profile.decoration;
+            menuDecoration.style.display = "block";
+        }else{
+            navDecoration.style.display = "none";
+            menuDecoration.style.display = "none";
+        }
+        menuName.textContent = profile.displayName;
+        menuRole.textContent = isOwner ? "Owner" : "Administrator";
     }
             
     onAuthStateChanged(auth, async (user) => {
         try{
             if(!user){
                 profileBtn.classList.add("hidden");
-                profileBtn.innerHTML = "";
+                navAvatar.removeAttribute("src");
+                menuAvatar.removeAttribute("src");
+                navDecoration.style.display = "none";
+                menuDecoration.style.display = "none";
                 profileMenu.classList.add("hidden");
                 return;
             }
@@ -1125,7 +1177,10 @@
             if(!adminDoc.exists()){
                 await signOut(auth);
                 profileBtn.classList.add("hidden");
-                profileBtn.innerHTML = "";
+                navAvatar.removeAttribute("src");
+                menuAvatar.removeAttribute("src");
+                navDecoration.style.display = "none";
+                menuDecoration.style.display = "none";
                 profileMenu.classList.add("hidden");
                 return;
             }
@@ -1447,10 +1502,23 @@
                             <span>Origin</span>
                             <div>${book.origin}</div>
                         </div>
-                        <div class="meta-row">
-                            <span>Chapters</span>
-                            <div>${book.chapterNumber.toLocaleString()}</div>
-                        </div>
+                        ${
+                            (
+                                book.category === "Book" ||
+                                book.category === "Poetry"
+                            ) &&
+                            (
+                                book.chapterNumber === null ||
+                                book.chapterNumber === undefined
+                            )
+                                ? ""
+                                : `
+                                <div class="meta-row">
+                                    <span>Chapters</span>
+                                    <div>${book.chapterNumber.toLocaleString()}</div>
+                                </div>
+                                `
+                        }
                         <div class="meta-row">
                             <span>Status</span>
                             <div>${book.status}</div>
